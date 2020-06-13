@@ -51,7 +51,7 @@ class DemoSiteMetaSeeder extends Seeder
         $this->usersData();
 
         //seed posts data
-        echo PHP_EOL , 'seeding settings...';
+        echo PHP_EOL , 'seeding posts...';
         $this->postsData();
 
 

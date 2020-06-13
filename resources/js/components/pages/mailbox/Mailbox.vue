@@ -1,5 +1,5 @@
 <template>
-  <div class="content-wrapper" style="min-height: 1643.5px;">
+  <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
@@ -11,9 +11,7 @@
             <i class="fa fa-dashboard"></i> Dashboard
           </router-link>
         </li>
-        <li class="breadcrumb-item active">
-            <router-link :to="{ name: 'Mailbox' }">Mailbox</router-link>
-        </li>
+        <li class="breadcrumb-item active">Mailbox</li>
       </ol>
     </section>
 

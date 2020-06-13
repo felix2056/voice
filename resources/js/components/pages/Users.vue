@@ -1,5 +1,5 @@
 <template>
-  <div class="content-wrapper" style="min-height: 1748.5px;">
+  <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>Users</h1>
@@ -9,8 +9,8 @@
             <i class="fa fa-dashboard"></i> Dashboard
           </router-link>
         </li>
-        <li class="breadcrumb-item">
-          <router-link :to="{ name: 'Users' }">Users</router-link>
+        <li class="breadcrumb-item active">
+          Users
         </li>
       </ol>
     </section>

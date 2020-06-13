@@ -1,5 +1,5 @@
 <template>
-  <div class="content-wrapper" style="min-height: 1923.5px;">
+  <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>Chats</h1>

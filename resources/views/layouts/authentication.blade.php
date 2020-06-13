@@ -1,14 +1,42 @@
 <!DOCTYPE html>
 <html lang="en" style="height: auto; min-height: 100%;">
 <head>
+    <?php
+    $settings = App\Setting::whereIn(
+            'meta_key', [
+                'logo',
+                'favicon',
+                'site_name',
+                'short_name',
+                'site_desc',
+                'site_link',
+                'keywords',
+                'email',
+                'contact_address',
+                'contact_email',
+                'contact_phone',
+                'facebook',
+                'twitter',
+                'instagram'
+            ]
+            )->get();
+
+            $metas = [];
+
+            foreach ($settings as $setting){
+                $metas[$setting->meta_key] = $setting->meta_value;
+            }
+            $siteInfo = $metas;
+    ?>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="../images/favicon.ico">
+    <meta name="description" content="{{ $siteInfo['site_desc'] }}">
+    <meta name="author" content="{{ $siteInfo['site_name'] }}">
+    <link rel="icon" href="@if($siteInfo['favicon']){{asset('storage/site/'.$siteInfo['favicon'])}} @else{{ asset('assets/images/site/favicon.png') }}@endif">
 
-    <title>Crypto Admin - Dashboard</title>
+    <title>{{ $siteInfo['site_name'] }} | Authentication</title>
 
     <!-- Bootstrap 4.0-->
     <link rel="stylesheet" href="{{ asset('assets/vendor_components/bootstrap/dist/css/bootstrap.css') }}">

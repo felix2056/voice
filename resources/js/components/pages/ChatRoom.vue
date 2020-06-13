@@ -1,5 +1,5 @@
 <template>
-  <div class="content-wrapper" style="min-height: 1371px;">
+  <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>Chats</h1>
@@ -9,7 +9,7 @@
             <i class="fa fa-dashboard"></i> Dashboard
           </router-link>
         </li>
-        <li class="breadcrumb-item active">Chats</li>
+        <li class="breadcrumb-item active">Chatroom</li>
       </ol>
     </section>
 
@@ -47,7 +47,7 @@
               <div
                 v-if="messages.length > 0"
                 class="direct-chat-messages"
-                id="direct-chat"
+                id="chat-body"
                 style="width: auto; height: 380px; overflow: auto"
               >
                 <div
@@ -134,8 +134,6 @@ export default {
     async getMessages() {
       let _this = this;
 
-      var msg_body = document.getElementById("direct-chat");
-
       this.loading = true;
 
       let url = `/chatroom`;
@@ -144,6 +142,8 @@ export default {
         if (response.data.messages != null) {
           this.messages = response.data.messages;
         }
+
+        var msg_body = document.getElementById("chat-body");
 
         this.loading = false;
 
@@ -156,12 +156,13 @@ export default {
         console.log(e);
 
         this.messages.push({
-          id: e.message.id,
           user_id: e.message.user_id,
           user: e.message.user,
           body: e.message.body,
           created_at: e.message.created_at
         });
+
+        var msg_body = document.getElementById("chat-body");
 
         setTimeout(function() {
           msg_body.scrollTop = msg_body.scrollHeight;
@@ -181,7 +182,7 @@ export default {
       let message = this.newMessage;
       let url = `/send-message-chatroom`;
 
-      var msg_body = document.getElementById("direct-chat");
+      var msg_body = document.getElementById("chat-body");
 
       axios
         .post(url, { message: message })

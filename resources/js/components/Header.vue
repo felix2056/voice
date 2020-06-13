@@ -186,7 +186,7 @@
         <ul class="sidebar-menu tree" data-widget="tree">
           <li class="nav-devider"></li>
           <li class="header nav-small-cap">GENERAL</li>
-          <li class="active">
+          <li>
             <router-link :to="{ name: 'Home' }">
               <i class="icon-home"></i>
               <span>Dashboard</span>
@@ -934,4 +934,16 @@ export default {
 </script>
 
 <style>
+.skin-yellow .sidebar-menu>li:hover>a, .skin-yellow .sidebar-menu>li >a.router-link-exact-active, .skin-yellow .sidebar-menu>li.menu-open>a{
+  color: #ffffff;
+  background: #303030;
+}
+
+.skin-yellow .sidebar-menu > li > a.router-link-exact-active,
+.skin-yellow .sidebar-menu > li.menu-open > a {
+  color: #ffffff;
+}
+.skin-yellow .sidebar-menu > li > a.router-link-exact-active {
+  border-left-color: #fbae1c;
+}
 </style>

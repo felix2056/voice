@@ -1,6 +1,6 @@
 <template>
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper" style="min-height: 1643.5px;">
+  <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
@@ -9,10 +9,9 @@
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
           <router-link :to="{ name: 'Home' }">
-            <i class="fa fa-dashboard"></i> Home
+            <i class="fa fa-dashboard"></i> Dashboard
           </router-link>
         </li>
-        <li class="breadcrumb-item active">Dashboard</li>
       </ol>
     </section>
 
@@ -28,8 +27,41 @@
                     id="webticker-1"
                     style="position: relative; overflow: hidden; float: left; font: bold 10px Verdana; list-style-type: none; margin: 0px; padding: 0px; width: 1766.39px; transition-timing-function: linear; transition-duration: 3.40218s; left: -170.109px;"
                   >
-                    <li v-for="post in posts" :key="post.id" style="white-space: nowrap; float: left; padding: 0px 7px;">
+                    <!-- <li v-for="post in posts" :key="post.id" style="white-space: nowrap; float: left; padding: 0px 7px;">
                       <i class="cc GAME"></i> {{ post.headline }}
+                    </li> -->
+                    <li style="white-space: nowrap; float: left; padding: 0px 7px;">
+                      <i class="cc GAME"></i>post.headline
+                    </li>
+                    <li style="white-space: nowrap; float: left; padding: 0px 7px;">
+                      <i class="cc GAME"></i>post.headline
+                    </li>
+                    <li style="white-space: nowrap; float: left; padding: 0px 7px;">
+                      <i class="cc GAME"></i>post.headline
+                    </li>
+                    <li style="white-space: nowrap; float: left; padding: 0px 7px;">
+                      <i class="cc GAME"></i>post.headline
+                    </li>
+                    <li style="white-space: nowrap; float: left; padding: 0px 7px;">
+                      <i class="cc GAME"></i>post.headline
+                    </li>
+                    <li style="white-space: nowrap; float: left; padding: 0px 7px;">
+                      <i class="cc GAME"></i>post.headline
+                    </li>
+                    <li style="white-space: nowrap; float: left; padding: 0px 7px;">
+                      <i class="cc GAME"></i>post.headline
+                    </li>
+                    <li style="white-space: nowrap; float: left; padding: 0px 7px;">
+                      <i class="cc GAME"></i>post.headline
+                    </li>
+                    <li style="white-space: nowrap; float: left; padding: 0px 7px;">
+                      <i class="cc GAME"></i>post.headline
+                    </li>
+                    <li style="white-space: nowrap; float: left; padding: 0px 7px;">
+                      <i class="cc GAME"></i>post.headline
+                    </li>
+                    <li style="white-space: nowrap; float: left; padding: 0px 7px;">
+                      <i class="cc GAME"></i>post.headline
                     </li>
                   </ul>
                   <span class="tickeroverlay-left" style="display: none;">&nbsp;</span>
