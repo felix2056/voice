@@ -1,19 +1,5 @@
 <template>
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>Chats</h1>
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <router-link :to="{ name: 'Home' }">
-            <i class="fa fa-dashboard"></i> Dashboard
-          </router-link>
-        </li>
-        <li class="breadcrumb-item active">Chatroom</li>
-      </ol>
-    </section>
-
-    <!-- Main content -->
+  <!-- Main content -->
     <section class="content">
       <div class="row">
         <div class="col-lg-12">
@@ -105,7 +91,6 @@
         </div>
       </div>
     </section>
-  </div>
 </template>
 
 <script>
@@ -203,4 +188,5 @@ export default {
 </script>
 
 <style>
+
 </style>

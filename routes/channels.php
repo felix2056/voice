@@ -22,8 +22,12 @@ Broadcast::channel('mail', function ($user) {
     return Auth::check();
 });
 
-Broadcast::channel('chat', function ($user) {
-    return Auth::check();
+Broadcast::channel('chat.{member}', function ($user, $member) {
+    return $user->id == $member;
+});
+
+Broadcast::channel('notify.{member}', function ($user, $member) {
+    return $user->id == $member;
 });
 
 Broadcast::channel('chatroom', function ($user) {

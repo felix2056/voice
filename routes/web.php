@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/broadcast', function() {
+    broadcast(new \App\Events\NewMessage('Sent from my Voice application'));
+    return 'ok';
+});
+
 Route::get('/', function () {
     return view('home');
 })->name('home');
@@ -45,6 +50,7 @@ Route::group(['middleware' => ['auth']], function () {
         
         /*messages with conversation*/
         Route::get('/messages-with-conversation/{conversation_id}', 'MessagesController@fetchConvoMessages')->name('user.messages.fetchConvoMessages');
+        Route::get('/get-messages/{user_id}', 'MessagesController@fetchMessages')->name('user.messages.fetchMessages');
         Route::post('/send-message/{user_id}', 'MessagesController@sendMessage')->name('user.messages.sendMessage');
 
         //Get mail

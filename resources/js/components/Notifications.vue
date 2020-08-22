@@ -34,6 +34,7 @@
 export default {
   data() {
     return {
+      user: Laravel.user,
       notifications: []
     };
   },
@@ -50,9 +51,7 @@ export default {
   },
 
   mounted() {
-    this.getNotifications().then(() => {
-      this.setNotificationInteval();
-    });
+    this.getNotifications();
   },
 
   methods: {

@@ -122,11 +122,11 @@
             </li>
 
             <!-- Control Sidebar Toggle Button -->
-            <!-- <li>
+            <li>
               <a href="#" data-toggle="control-sidebar">
-                <i class="fa fa-cog fa-spin"></i>
+                <i class="fa fa-comments fa-spin"></i>
               </a>
-            </li> -->
+            </li>
           </ul>
         </div>
       </nav>
@@ -294,6 +294,19 @@
       </section>
     </aside>
 
+    <!-- Right side column. contains easy access to the chatroom -->
+    <aside class="control-sidebar control-sidebar-dark">
+      <!-- Create the tabs -->
+      <!-- <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+        <li class="nav-item"><a href="#control-sidebar-theme-demo-options-tab" class="active show" data-toggle="tab"><i class="fa fa-wrench"></i></a></li><li class="nav-item"><a href="#control-sidebar-home-tab" data-toggle="tab" class=""><i class="fa fa-home"></i></a></li>
+        <li class="nav-item"><a href="#control-sidebar-settings-tab" data-toggle="tab" class=""><i class="fa fa-cog fa-spin"></i></a></li>
+      </ul> -->
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <mini-chatroom></mini-chatroom>
+      </div>
+    </aside>
+
     <!-- Listen to broadcast -->
     <div
       class="modal modal-left fade"
@@ -396,6 +409,7 @@
 </template>
 
 <script>
+import MiniChatroom from "./MiniChatroom";
 import { RotateSquare5 } from "vue-loading-spinner";
 import { servers } from './utils/ICEServers';
 import { log } from "./utils/logging";
@@ -406,6 +420,7 @@ import { mapGetters } from "vuex";
 
 export default {
   components: {
+    MiniChatroom,
     RotateSquare5,
     notifications
   },

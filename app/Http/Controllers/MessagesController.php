@@ -11,6 +11,7 @@ use App\Conversation;
 use App\User;
 
 use App\Events\NewMessage;
+use App\Events\NewNotification;
 
 class MessagesController extends Controller
 {
@@ -138,7 +139,7 @@ class MessagesController extends Controller
             'body' => $body
         ]);
 
-        broadcast(new NewMessage($message->load('user')))->toOthers();
+        broadcast(new NewMessage($message->load('user'), $otherUser))->toOthers();
 
         return response()->json([
             'message' => $message->load('user')

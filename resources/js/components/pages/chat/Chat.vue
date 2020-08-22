@@ -25,13 +25,13 @@
             <div class="box-body">
               <div
                 id="chat-app"
+                v-if="messages.length > 0"
                 class="direct-chat-messages chat-app"
                 style="width: auto; height: 500px; overflow: auto"
               >
                 <!-- Message. Default to the left -->
                 <div
                   class="direct-chat-msg mb-30"
-                  v-if="messages.length > 0"
                   v-for="message in messages"
                   :key="message.id"
                   :class="{ 'right': message.user_id === user.id }"
@@ -53,6 +53,17 @@
                   <div class="direct-chat-text">{{ message.body }}</div>
                 </div>
               </div>
+
+              <div v-else id="chat-app" class="direct-chat-messages chat-app" style="width: auto; height: 500px; overflow: auto">
+                  <div class="no-message-container">
+                    <div class="row mb-5">
+                      <div class="col-md-12">
+                        <img src="/images/no_message.svg" class="img-fluid" alt="image">
+                      </div>
+                    </div>
+                    <p class="lead text-center" style="font-size: 16px; font-weigth:700; color: #828282;">Start A Conversation</p>
+                  </div>
+                </div>
             </div>
 
             <div class="box-footer">
@@ -63,7 +74,7 @@
                 <div class="input-group">
                   <input
                     type="text"
-                    @keydown="isTyping"
+                    
                     @keyup.enter="sendMessage"
                     v-model="newMessage"
                     placeholder="Type Message ..."
@@ -129,18 +140,16 @@ export default {
           this.messages = response.data.messages;
         }
 
+        this.loading = false;
         this.otherUser = response.data.otherUser;
 
-        var chat_body = document.getElementById("chat-app");
-
-        this.loading = false;
-
         setTimeout(function() {
+          var chat_body = document.getElementById("chat-app");
           chat_body.scrollTop = chat_body.scrollHeight;
-        }, 200);
+        }, 800);
       });
 
-      Echo.private("chat")
+      Echo.private('chat.' + this.user.id)
         .listen("NewMessage", e => {
           console.log(e);
 
@@ -170,7 +179,7 @@ export default {
     },
 
     isTyping() {
-      let channel = Echo.private("chat");
+      let channel = Echo.private('chat.' + this.user.id);
       let self = this;
 
       setTimeout(function() {

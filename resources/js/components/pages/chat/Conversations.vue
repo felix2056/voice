@@ -194,23 +194,23 @@ export default {
       this.loading = true;
 
       let url = `/messages-with-conversation/${conversation_id}`;
+      //let url = `/get-messages/${user_id}`;
 
       axios.get(url).then(response => {
         if (response.data.messages != null) {
           this.messages = response.data.messages;
         }
 
-        var chat_body = document.getElementById("chat-app");
-
         this.loading = false;
         this.loadingMessage = "";
 
         setTimeout(function() {
+          var chat_body = document.getElementById("chat-app");
           chat_body.scrollTop = chat_body.scrollHeight;
-        }, 200);
+        }, 2000);
       });
 
-      Echo.private("chat")
+      Echo.private('chat.' + this.user.id)
         .listen("NewMessage", e => {
           console.log(e);
 
@@ -222,9 +222,8 @@ export default {
             created_at: e.message.created_at
           });
 
-          var chat_body = document.getElementById("chat-app");
-
           setTimeout(function() {
+            var chat_body = document.getElementById("chat-app");
             chat_body.scrollTop = chat_body.scrollHeight;
           }, 200);
         })

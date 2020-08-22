@@ -8,11 +8,11 @@
           <a class="nav-link" href="javascript:void(0)">FAQ</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Purchase Now</a>
+          <a class="nav-link" href="#">Voice</a>
         </li>
       </ul>
-    </div>© 2019
-    <a href="https://www.multipurposethemes.com/">Multi-Purpose Themes</a>. All Rights Reserved.
+    </div>© 2020
+    <a href="https://www.multipurposethemes.com/">Copyright</a>. All Rights Reserved.
   </footer>
 </template>
 

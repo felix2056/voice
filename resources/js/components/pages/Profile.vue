@@ -45,6 +45,13 @@
 						<p><i class="fa fa-envelope pr-15"></i>{{ profile.email }} </p>
 						<p><i class="fa fa-phone pr-15"></i>{{ profile.phonenumber }}</p>
 						<p><i class="fa fa-map-marker pr-15"></i>{{ profile.street }}</p>
+
+                        <div class="user-social-acount">
+                            <router-link :to="{ name: 'Chat', params: { slug: profile.slug  } }" class="btn btn-block btn-social btn-foursquare">
+                                <i class="fa fa-comments-o"></i> Send Message
+                            </router-link>
+						</div>
+
 						<p class="mt-25">Social Profile</p>
 						<div class="user-social-acount">
 							<button class="btn btn-block btn-social btn-facebook"><i class="fa fa-facebook"></i> Facebook</button>

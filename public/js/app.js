@@ -6995,7 +6995,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      auth: Laravel.user,
       notChatPage: true,
+      messageSound: new Audio("/sounds/newMessage.mp3"),
+      mailSound: new Audio("/sounds/newMail.mp3"),
+      broadcastSound: new Audio("/sounds/newBroadcast.mp3"),
       user: "",
       avatar: "",
       slug: ""
@@ -7028,7 +7032,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this = this;
 
       if (this.notChatPage) {
-        Echo["private"]("chat").listen("NewMessage", function (e) {
+        Echo["private"]('chat.' + this.auth.id).listen("NewMessage", function (e) {
           console.log("Message Alert:" + e);
           _this.user = e.message.user.name;
           _this.avatar = e.message.user.avatar_url;
@@ -7059,16 +7063,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     },
     showMessage: function showMessage() {
+      this.messageSound.play();
       setTimeout(function () {
         $("#alertbottomright").fadeIn(350);
       }, 5000);
     },
     showMail: function showMail() {
+      this.mailSound.play();
       setTimeout(function () {
         $(".alerttop2").fadeIn(350);
       }, 5000);
     },
     showBroadcast: function showBroadcast() {
+      this.broadcastSound.play();
       setTimeout(function () {
         $(".alertbottom2").fadeIn(350);
       }, 2000);
@@ -7140,11 +7147,12 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var vue_loading_spinner__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-loading-spinner */ "./node_modules/vue-loading-spinner/src/index.js");
-/* harmony import */ var _utils_ICEServers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils/ICEServers */ "./resources/js/components/utils/ICEServers.js");
-/* harmony import */ var _utils_logging__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils/logging */ "./resources/js/components/utils/logging.js");
-/* harmony import */ var _Notifications__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Notifications */ "./resources/js/components/Notifications.vue");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _MiniChatroom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MiniChatroom */ "./resources/js/components/MiniChatroom.vue");
+/* harmony import */ var vue_loading_spinner__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-loading-spinner */ "./node_modules/vue-loading-spinner/src/index.js");
+/* harmony import */ var _utils_ICEServers__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils/ICEServers */ "./resources/js/components/utils/ICEServers.js");
+/* harmony import */ var _utils_logging__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utils/logging */ "./resources/js/components/utils/logging.js");
+/* harmony import */ var _Notifications__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Notifications */ "./resources/js/components/Notifications.vue");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -7554,6 +7562,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -7561,8 +7583,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    RotateSquare5: vue_loading_spinner__WEBPACK_IMPORTED_MODULE_1__["RotateSquare5"],
-    notifications: _Notifications__WEBPACK_IMPORTED_MODULE_4__["default"]
+    MiniChatroom: _MiniChatroom__WEBPACK_IMPORTED_MODULE_1__["default"],
+    RotateSquare5: vue_loading_spinner__WEBPACK_IMPORTED_MODULE_2__["RotateSquare5"],
+    notifications: _Notifications__WEBPACK_IMPORTED_MODULE_5__["default"]
   },
   data: function data() {
     return {
@@ -7589,7 +7612,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       localStream: undefined,
       remoteStream: undefined,
       // STUN ice servers
-      configuration: _utils_ICEServers__WEBPACK_IMPORTED_MODULE_2__["servers"],
+      configuration: _utils_ICEServers__WEBPACK_IMPORTED_MODULE_3__["servers"],
       // Peer connection
       pc: undefined,
       // Offer config
@@ -7613,7 +7636,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     };
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_5__["mapGetters"])(["getSettingsByIndex"])),
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_6__["mapGetters"])(["getSettingsByIndex"])),
   mounted: function mounted() {
     var _this = this;
 
@@ -7642,7 +7665,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("".concat(_this2.user.name, " initializing and setting up in case of broadcast"));
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this2.user.name, " initializing and setting up in case of broadcast"));
                 Echo["private"]("broadcast").listen("NewBroadcast", function (data) {
                   if (data.type === "signal") {
                     _this2.onSignalMessage(data);
@@ -7653,7 +7676,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
                 _this2.myAudio = document.getElementById("localAudio");
                 _this2.remoteAudio = document.getElementById('remoteAudio');
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])(_this2.myAudio); // Create peer connection
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])(_this2.myAudio); // Create peer connection
 
                 _this2.createPeerConnection(); // Event listeners
 
@@ -7687,7 +7710,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
               case 2:
                 _this3.loading = true;
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("".concat(_this3.user.name, " wants to start a broadcast"));
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this3.user.name, " wants to start a broadcast"));
                 _this3.callout["class"] = 'callout-info';
                 _this3.callout.icon = 'fa fa-info';
                 _this3.callout.header = 'Initailizing broadcast..';
@@ -7721,7 +7744,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("Requesting ".concat(_this4.user.name, " voice stream"));
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Requesting ".concat(_this4.user.name, " voice stream"));
                 _this4.callout.body = "Requesting ".concat(_this4.user.name, " voice stream");
                 _this4.alert.body = "Requesting ".concat(_this4.user.name, " voice stream");
 
@@ -7758,7 +7781,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 stream = _context4.t0;
                 _this4.myAudio.srcObject = stream;
                 _this4.localStream = stream;
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("Received local voice stream"); //callout for admin
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Received local voice stream"); //callout for admin
 
                 _this4.callout["class"] = 'callout-warning';
                 _this4.callout.icon = 'fa fa-warning';
@@ -7776,7 +7799,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 _context4.prev = 27;
                 _context4.t2 = _context4["catch"](4);
                 _this4.loading = false;
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("getUserMedia error: ".concat(_context4.t2)); //callout for admin
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("getUserMedia error: ".concat(_context4.t2)); //callout for admin
 
                 _this4.callout["class"] = 'callout-danger';
                 _this4.callout.icon = 'fa fa-ban';
@@ -7800,7 +7823,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var audio = this.localStream.getAudioTracks();
 
       if (audio.length > 0) {
-        Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("Using audio device: ".concat(audio[0].label)); //callout for admin
+        Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Using audio device: ".concat(audio[0].label)); //callout for admin
 
         this.callout["class"] = 'callout-warning';
         this.callout.icon = 'fa fa-warning';
@@ -7824,7 +7847,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             switch (_context5.prev = _context5.next) {
               case 0:
                 user = _this5.user.id;
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])(details['content']);
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])(details['content']);
                 message = {
                   from: user,
                   type: details['type'],
@@ -7858,7 +7881,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     createPeerConnection: function createPeerConnection() {
       this.pc = new RTCPeerConnection(this.configuration);
-      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("".concat(this.user.name, " Created peer connection object"));
+      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(this.user.name, " Created peer connection object"));
     },
     addLocalStream: function addLocalStream() {
       this.pc.addStream(this.localStream);
@@ -7867,7 +7890,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this6 = this;
 
       // send any ice candidates to the other peer
-      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("".concat(this.user.name, " starting onice candidate"));
+      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(this.user.name, " starting onice candidate"));
       var limit = 0;
 
       this.pc.onicecandidate = function (_ref) {
@@ -7891,7 +7914,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     onAddStream: function onAddStream() {
       var _this7 = this;
 
-      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("".concat(this.user.name, " starting onadd stream"));
+      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(this.user.name, " starting onadd stream"));
 
       this.pc.onaddstream = function (event) {
         if (!_this7.remoteAudio.srcObject && event.stream) {
@@ -7901,7 +7924,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       };
     },
     createBroadcast: function createBroadcast() {
-      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("".concat(this.user.name, " wants to start a broadcast"));
+      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(this.user.name, " wants to start a broadcast"));
       this.callout["class"] = 'callout-warning';
       this.callout.icon = 'fa fa-warning';
       this.callout.header = 'Sending Broadcast...';
@@ -7917,19 +7940,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             switch (_context6.prev = _context6.next) {
               case 0:
                 _context6.prev = 0;
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("".concat(_this8.user.name, " setRemoteDescription: start"));
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this8.user.name, " setRemoteDescription: start"));
                 _context6.next = 4;
                 return _this8.pc.setRemoteDescription(remoteDesc);
 
               case 4:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("".concat(_this8.user.name, " setRemoteDescription: finished"));
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this8.user.name, " setRemoteDescription: finished"));
                 _context6.next = 10;
                 break;
 
               case 7:
                 _context6.prev = 7;
                 _context6.t0 = _context6["catch"](0);
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("Error setting the RemoteDescription with ".concat(_this8.user.name, ". Error: ").concat(_context6.t0));
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Error setting the RemoteDescription with ".concat(_this8.user.name, ". Error: ").concat(_context6.t0));
 
               case 10:
               case "end":
@@ -7948,20 +7971,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           while (1) {
             switch (_context7.prev = _context7.next) {
               case 0:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("".concat(_this9.user.name, " create an answer: start"));
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this9.user.name, " create an answer: start"));
                 _context7.prev = 1;
                 _context7.next = 4;
                 return _this9.pc.createAnswer();
 
               case 4:
                 answer = _context7.sent;
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("Answer from ".concat(_this9.user.name, "\n ").concat(answer.sdp));
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("".concat(_this9.user.name, " setLocalDescription: start"));
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Answer from ".concat(_this9.user.name, "\n ").concat(answer.sdp));
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this9.user.name, " setLocalDescription: start"));
                 _context7.next = 9;
                 return _this9.pc.setLocalDescription(answer);
 
               case 9:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("".concat(_this9.user.name, " setLocalDescription: finished"));
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this9.user.name, " setLocalDescription: finished"));
                 _this9.alert["class"] = 'alert-success';
                 _this9.alert.icon = 'fa fa-check';
                 _this9.alert.header = 'Answering Broadcast...';
@@ -7975,7 +7998,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               case 17:
                 _context7.prev = 17;
                 _context7.t0 = _context7["catch"](1);
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("Error creating the answer from ".concat(_this9.user.name, ". Error: ").concat(_context7.t0));
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Error creating the answer from ".concat(_this9.user.name, ". Error: ").concat(_context7.t0));
                 _this9.alert["class"] = 'alert-danger';
                 _this9.alert.icon = 'fa fa-ban';
                 _this9.alert.header = 'Failed To Join Broadcast...';
@@ -7998,20 +8021,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           while (1) {
             switch (_context8.prev = _context8.next) {
               case 0:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("".concat(_this10.user.name, " create an offer: start"));
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this10.user.name, " create an offer: start"));
                 _context8.prev = 1;
                 _context8.next = 4;
                 return _this10.pc.createOffer(_this10.offerOptions);
 
               case 4:
                 offer = _context8.sent;
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("Offer from ".concat(_this10.user.name, "\n ").concat(offer.sdp));
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("".concat(_this10.user.name, " setLocalDescription: start"));
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Offer from ".concat(_this10.user.name, "\n ").concat(offer.sdp));
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this10.user.name, " setLocalDescription: start"));
                 _context8.next = 9;
                 return _this10.pc.setLocalDescription(offer);
 
               case 9:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("".concat(_this10.user.name, " setLocalDescription: finished"));
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this10.user.name, " setLocalDescription: finished"));
                 _this10.callout["class"] = 'callout-success';
                 _this10.callout.icon = 'fa fa-check';
                 _this10.callout.header = 'Initialization Completed..';
@@ -8026,7 +8049,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               case 18:
                 _context8.prev = 18;
                 _context8.t0 = _context8["catch"](1);
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("Error creating the offer from ".concat(_this10.user.name, ". Error: ").concat(_context8.t0));
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Error creating the offer from ".concat(_this10.user.name, ". Error: ").concat(_context8.t0));
                 _this10.callout["class"] = 'callout-danger';
                 _this10.callout.icon = 'fa fa-ban';
                 _this10.callout.header = 'Initialization Failed!';
@@ -8042,7 +8065,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     sendSignalingMessage: function sendSignalingMessage(desc, offer) {
       var isOffer = offer ? "offer" : "answer";
-      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("".concat(this.user.name, " sends the ").concat(isOffer, " through the signal channel")); // send the offer to the other peer
+      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(this.user.name, " sends the ").concat(isOffer, " through the signal channel")); // send the offer to the other peer
 
       var details = [];
       details['type'] = 'signal';
@@ -8051,16 +8074,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.sendSignal(details);
     },
     onSignalMessage: function onSignalMessage(m) {
-      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])(m.subtype);
+      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])(m.subtype);
       this.broadcastAvailable = true;
 
       if (m.subtype === 'offer') {
-        Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])('got remote offer from ' + m.from + ', content ' + m.content);
+        Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])('got remote offer from ' + m.from + ', content ' + m.content);
         this.onSignalOffer(m.content);
       } else if (m.subtype === 'answer') {
         this.onSignalAnswer(m.content);
       } else if (m.subtype === 'candidate') {
-        Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])('got remote candidate from ' + m.from + ', content ' + m.content);
+        Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])('got remote candidate from ' + m.from + ', content ' + m.content);
         this.onSignalCandidate(m.content);
       } else if (m.subtype === 'leave') {
         this.onSignalLeave();
@@ -8079,7 +8102,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           while (1) {
             switch (_context9.prev = _context9.next) {
               case 0:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])('onsignal offer');
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])('onsignal offer');
                 _this11.offer = offer; //alert for members
 
                 _this11.alert["class"] = 'alert-success';
@@ -8113,7 +8136,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             switch (_context10.prev = _context10.next) {
               case 0:
                 _this12.isBroadcaster = false;
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("Requesting ".concat(_this12.user.name, " video stream"));
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Requesting ".concat(_this12.user.name, " video stream"));
                 _context10.next = 4;
                 return _this12.getUserVoiceMedia();
 
@@ -8141,7 +8164,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           while (1) {
             switch (_context11.prev = _context11.next) {
               case 0:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])('onRemoteAnswer : ' + answer);
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])('onRemoteAnswer : ' + answer);
                 data = {
                   type: answer.type,
                   sdp: answer.sdp += "\n"
@@ -8166,7 +8189,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         title: "New user connected!"
       });
       this.connectedUsers += 1;
-      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])(pc + ' setRemoteDescription complete');
+      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])(pc + ' setRemoteDescription complete');
     },
     onSignalCandidate: function onSignalCandidate(candidate) {
       var _this14 = this;
@@ -8177,19 +8200,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             switch (_context12.prev = _context12.next) {
               case 0:
                 _context12.prev = 0;
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("".concat(_this14.user.name, " attempting to add a candidate"));
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this14.user.name, " attempting to add a candidate"));
                 _context12.next = 4;
                 return _this14.pc.addIceCandidate(new RTCIceCandidate(candidate));
 
               case 4:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("Candidate added");
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Candidate added");
                 _context12.next = 10;
                 break;
 
               case 7:
                 _context12.prev = 7;
                 _context12.t0 = _context12["catch"](0);
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("Error adding a candidate in ".concat(_this14.user.name, ". Error: ").concat(_context12.t0));
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Error adding a candidate in ".concat(_this14.user.name, ". Error: ").concat(_context12.t0));
 
               case 10:
               case "end":
@@ -8203,7 +8226,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.connectedUsers -= 1;
     },
     onSignalClose: function onSignalClose() {
-      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])('Ending broadcast');
+      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])('Ending broadcast');
       this.leaveBroadcast();
     },
     //Video call already going on and member wants to end it
@@ -8229,7 +8252,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                     details['type'] = 'signal';
                     details['subtype'] = 'close';
                     details['content'] = 'ending the broadcast';
-                    Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])('Ending broadcast');
+                    Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])('Ending broadcast');
                     _this15.callout["class"] = 'callout-danger';
                     _this15.callout.icon = 'fa fa-danger';
                     _this15.callout.header = 'Killing broadcast..';
@@ -8294,6 +8317,232 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MiniChatroom.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MiniChatroom.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      loading: false,
+      user: Laravel.user,
+      messages: [],
+      newMessage: ""
+    };
+  },
+  computed: {
+    emptyMessage: function emptyMessage() {
+      return this.newMessage == "";
+    }
+  },
+  mounted: function mounted() {
+    var _this2 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return _this2.getMessages();
+
+            case 2:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }))();
+  },
+  methods: {
+    getMessages: function getMessages() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        var _this, url;
+
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _this = _this3;
+                _this3.loading = true;
+                url = "/chatroom";
+                axios.get(url).then(function (response) {
+                  if (response.data.messages != null) {
+                    _this3.messages = response.data.messages;
+                  }
+
+                  _this3.loading = false;
+                  setTimeout(function () {
+                    var msg_body = document.getElementById("chat-body");
+                    msg_body.scrollTop = msg_body.scrollHeight;
+                  }, 800);
+                });
+                Echo["private"]("chatroom").listen("NewChatroomMessage", function (e) {
+                  console.log(e);
+
+                  _this3.messages.push({
+                    user_id: e.chat.user_id,
+                    user: e.chat.user,
+                    body: e.chat.body,
+                    created_at: e.chat.created_at
+                  });
+
+                  setTimeout(function () {
+                    var msg_body = document.getElementById("chat-body");
+                    msg_body.scrollTop = msg_body.scrollHeight;
+                  }, 2000);
+                });
+
+              case 5:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    sendMessage: function sendMessage() {
+      var _this4 = this;
+
+      if (!this.user) {
+        return;
+      }
+
+      if (this.newMessage == "") {
+        return;
+      }
+
+      var message = this.newMessage;
+      var url = "/send-message-chatroom";
+      var msg_body = document.getElementById("chat-body");
+      axios.post(url, {
+        message: message
+      }).then(function (response) {
+        _this4.messages.push(response.data.message);
+
+        _this4.newMessage = "";
+        setTimeout(function () {
+          msg_body.scrollTop = msg_body.scrollHeight;
+        }, 200);
+      })["catch"](function (error) {
+        error.response.data.error.message ? _this4.errors.message = error.response.data.error.message : null;
+      });
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Notifications.vue?vue&type=script&lang=js&":
 /*!************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Notifications.vue?vue&type=script&lang=js& ***!
@@ -8346,6 +8595,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      user: Laravel.user,
       notifications: []
     };
   },
@@ -8361,11 +8611,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   },
   mounted: function mounted() {
-    var _this = this;
-
-    this.getNotifications().then(function () {
-      _this.setNotificationInteval();
-    });
+    this.getNotifications();
   },
   methods: {
     setNotificationInteval: function setNotificationInteval() {
@@ -8387,7 +8633,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     getNotifications: function getNotifications() {
-      var _this2 = this;
+      var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
         var url;
@@ -8398,7 +8644,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 url = "/notifications";
                 _context2.next = 3;
                 return axios.get(url).then(function (response) {
-                  _this2.notifications = response.data.notifications;
+                  _this.notifications = response.data.notifications;
                 })["catch"](function (err) {
                   console.log(err.response);
                 });
@@ -8619,26 +8865,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     _this3.messages = response.data.messages;
                   }
 
-                  var msg_body = document.getElementById("chat-body");
                   _this3.loading = false;
                   setTimeout(function () {
+                    var msg_body = document.getElementById("chat-body");
                     msg_body.scrollTop = msg_body.scrollHeight;
-                  }, 200);
+                  }, 800);
                 });
                 Echo["private"]("chatroom").listen("NewChatroomMessage", function (e) {
                   console.log(e);
 
                   _this3.messages.push({
-                    user_id: e.message.user_id,
-                    user: e.message.user,
-                    body: e.message.body,
-                    created_at: e.message.created_at
+                    user_id: e.chat.user_id,
+                    user: e.chat.user,
+                    body: e.chat.body,
+                    created_at: e.chat.created_at
                   });
 
-                  var msg_body = document.getElementById("chat-body");
                   setTimeout(function () {
+                    var msg_body = document.getElementById("chat-body");
                     msg_body.scrollTop = msg_body.scrollHeight;
-                  }, 200);
+                  }, 2000);
                 });
 
               case 5:
@@ -9766,6 +10012,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -10601,6 +10854,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return _defineProperty({
@@ -10656,14 +10920,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                     _this3.messages = response.data.messages;
                   }
 
-                  _this3.otherUser = response.data.otherUser;
-                  var chat_body = document.getElementById("chat-app");
                   _this3.loading = false;
+                  _this3.otherUser = response.data.otherUser;
                   setTimeout(function () {
+                    var chat_body = document.getElementById("chat-app");
                     chat_body.scrollTop = chat_body.scrollHeight;
-                  }, 200);
+                  }, 800);
                 });
-                Echo["private"]("chat").listen("NewMessage", function (e) {
+                Echo["private"]('chat.' + _this3.user.id).listen("NewMessage", function (e) {
                   console.log(e);
 
                   _this3.messages.push({
@@ -10696,7 +10960,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }))();
     },
     isTyping: function isTyping() {
-      var channel = Echo["private"]("chat");
+      var channel = Echo["private"]('chat.' + this.user.id);
       var self = this;
       setTimeout(function () {
         channel.whisper("typing", {
@@ -11009,20 +11273,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               case 0:
                 _this = _this6;
                 _this6.loading = true;
-                url = "/messages-with-conversation/".concat(conversation_id);
+                url = "/messages-with-conversation/".concat(conversation_id); //let url = `/get-messages/${user_id}`;
+
                 axios.get(url).then(function (response) {
                   if (response.data.messages != null) {
                     _this6.messages = response.data.messages;
                   }
 
-                  var chat_body = document.getElementById("chat-app");
                   _this6.loading = false;
                   _this6.loadingMessage = "";
                   setTimeout(function () {
+                    var chat_body = document.getElementById("chat-app");
                     chat_body.scrollTop = chat_body.scrollHeight;
-                  }, 200);
+                  }, 2000);
                 });
-                Echo["private"]("chat").listen("NewMessage", function (e) {
+                Echo["private"]('chat.' + _this6.user.id).listen("NewMessage", function (e) {
                   console.log(e);
 
                   _this6.messages.push({
@@ -11033,8 +11298,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                     created_at: e.message.created_at
                   });
 
-                  var chat_body = document.getElementById("chat-app");
                   setTimeout(function () {
+                    var chat_body = document.getElementById("chat-app");
                     chat_body.scrollTop = chat_body.scrollHeight;
                   }, 200);
                 }).listenForWhisper("typing", function (e) {
@@ -67319,15 +67584,15 @@ var staticRenderFns = [
             _vm._v(" "),
             _c("li", { staticClass: "nav-item" }, [
               _c("a", { staticClass: "nav-link", attrs: { href: "#" } }, [
-                _vm._v("Purchase Now")
+                _vm._v("Voice")
               ])
             ])
           ]
         )
       ]),
-      _vm._v("© 2019\n  "),
+      _vm._v("© 2020\n  "),
       _c("a", { attrs: { href: "https://www.multipurposethemes.com/" } }, [
-        _vm._v("Multi-Purpose Themes")
+        _vm._v("Copyright")
       ]),
       _vm._v(". All Rights Reserved.\n")
     ])
@@ -67575,7 +67840,9 @@ var render = function() {
                       ])
                     ])
                   ])
-                ])
+                ]),
+                _vm._v(" "),
+                _vm._m(2)
               ],
               1
             )
@@ -67731,7 +67998,7 @@ var render = function() {
               ),
               _vm._v(" "),
               _c("li", { staticClass: "treeview" }, [
-                _vm._m(2),
+                _vm._m(3),
                 _vm._v(" "),
                 _c("ul", { staticClass: "treeview-menu" }, [
                   _c(
@@ -67791,10 +68058,10 @@ var render = function() {
                 : _vm._e(),
               _vm._v(" "),
               _vm.$is("Admin") || _vm.$is("Broadcaster")
-                ? _c("li", [_vm._m(3)])
+                ? _c("li", [_vm._m(4)])
                 : _vm._e(),
               _vm._v(" "),
-              _vm._m(4),
+              _vm._m(5),
               _vm._v(" "),
               _vm.$is("Admin") || _vm.$is("Writer")
                 ? _c("li", { staticClass: "header nav-small-cap" }, [
@@ -67877,6 +68144,10 @@ var render = function() {
       )
     ]),
     _vm._v(" "),
+    _c("aside", { staticClass: "control-sidebar control-sidebar-dark" }, [
+      _c("div", { staticClass: "tab-content" }, [_c("mini-chatroom")], 1)
+    ]),
+    _vm._v(" "),
     _c(
       "div",
       {
@@ -67887,7 +68158,7 @@ var render = function() {
       [
         _c("div", { staticClass: "modal-dialog" }, [
           _c("div", { staticClass: "modal-content" }, [
-            _vm._m(5),
+            _vm._m(6),
             _vm._v(" "),
             _c("div", { staticClass: "modal-body" }, [
               _c("p", [_vm._v("Listen to a live broadcast")]),
@@ -67989,7 +68260,7 @@ var render = function() {
       [
         _c("div", { staticClass: "modal-dialog" }, [
           _c("div", { staticClass: "modal-content" }, [
-            _vm._m(6),
+            _vm._m(7),
             _vm._v(" "),
             _c("div", { staticClass: "modal-body" }, [
               _c("p", [
@@ -68076,9 +68347,9 @@ var render = function() {
                 ]
               ),
               _vm._v(" "),
-              _vm._m(7),
-              _vm._v(" "),
               _vm._m(8),
+              _vm._v(" "),
+              _vm._m(9),
               _vm._v(" "),
               _c(
                 "button",
@@ -68145,6 +68416,16 @@ var staticRenderFns = [
           ])
         ]
       )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("li", [
+      _c("a", { attrs: { href: "#", "data-toggle": "control-sidebar" } }, [
+        _c("i", { staticClass: "fa fa-comments fa-spin" })
+      ])
     ])
   },
   function() {
@@ -68258,6 +68539,226 @@ var staticRenderFns = [
       { staticClass: "btn btn-app bg-purple", attrs: { type: "button" } },
       [_c("i", { staticClass: "fa fa-pause" }), _vm._v(" Pause\n          ")]
     )
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MiniChatroom.vue?vue&type=template&id=66d87895&":
+/*!***************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MiniChatroom.vue?vue&type=template&id=66d87895& ***!
+  \***************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("section", { staticClass: "content" }, [
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-lg-12" }, [
+        _c(
+          "div",
+          {
+            staticClass: "box direct-chat direct-chat-success",
+            attrs: { id: "direct-chat" }
+          },
+          [
+            _vm._m(0),
+            _vm._v(" "),
+            _c("div", { staticClass: "box-body" }, [
+              _vm.messages.length > 0
+                ? _c(
+                    "div",
+                    {
+                      staticClass: "direct-chat-messages",
+                      staticStyle: {
+                        width: "auto",
+                        height: "380px",
+                        overflow: "auto"
+                      },
+                      attrs: { id: "chat-body" }
+                    },
+                    _vm._l(_vm.messages, function(message) {
+                      return _c(
+                        "div",
+                        {
+                          key: message.id,
+                          staticClass: "direct-chat-msg",
+                          class: message.user_id === _vm.user.id ? "right" : ""
+                        },
+                        [
+                          _c(
+                            "div",
+                            { staticClass: "direct-chat-info clearfix" },
+                            [
+                              _c(
+                                "span",
+                                {
+                                  staticClass: "direct-chat-name",
+                                  class:
+                                    message.user_id === _vm.user.id
+                                      ? "pull-right"
+                                      : "pull-left"
+                                },
+                                [_vm._v(_vm._s(message.user.name))]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "span",
+                                {
+                                  staticClass: "direct-chat-timestamp",
+                                  class:
+                                    message.user_id === _vm.user.id
+                                      ? "pull-left"
+                                      : "pull-right"
+                                },
+                                [
+                                  _c("timeago", {
+                                    attrs: {
+                                      datetime: message.created_at,
+                                      "auto-update": 60
+                                    }
+                                  })
+                                ],
+                                1
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c("img", {
+                            staticClass: "direct-chat-img",
+                            attrs: {
+                              src: message.user.avatar_url,
+                              alt: message.user.name
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "direct-chat-text" }, [
+                            _vm._v(_vm._s(message.body))
+                          ])
+                        ]
+                      )
+                    }),
+                    0
+                  )
+                : _vm._e()
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "box-footer" }, [
+              _c("form", { attrs: { method: "post" } }, [
+                _c("div", { staticClass: "input-group" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.newMessage,
+                        expression: "newMessage"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: {
+                      type: "text",
+                      name: "message",
+                      placeholder: "Type Message ..."
+                    },
+                    domProps: { value: _vm.newMessage },
+                    on: {
+                      keyup: function($event) {
+                        if (
+                          !$event.type.indexOf("key") &&
+                          _vm._k(
+                            $event.keyCode,
+                            "enter",
+                            13,
+                            $event.key,
+                            "Enter"
+                          )
+                        ) {
+                          return null
+                        }
+                        return _vm.sendMessage($event)
+                      },
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.newMessage = $event.target.value
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("span", { staticClass: "input-group-btn" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-success",
+                        attrs: { disabled: _vm.emptyMessage },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            return _vm.sendMessage($event)
+                          }
+                        }
+                      },
+                      [_vm._v("Send")]
+                    )
+                  ])
+                ])
+              ])
+            ])
+          ]
+        )
+      ])
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "box-header with-border" }, [
+      _c("h4", { staticClass: "box-title" }, [_vm._v("Chatroom")]),
+      _vm._v(" "),
+      _c("ul", { staticClass: "box-controls pull-right" }, [
+        _c("li", [
+          _c("a", { staticClass: "box-btn-close", attrs: { href: "#" } })
+        ]),
+        _vm._v(" "),
+        _c("li", [
+          _c("a", { staticClass: "box-btn-slide", attrs: { href: "#" } })
+        ]),
+        _vm._v(" "),
+        _c("li", [
+          _c("a", { staticClass: "box-btn-fullscreen", attrs: { href: "#" } })
+        ]),
+        _vm._v(" "),
+        _c("li", [
+          _c(
+            "span",
+            {
+              staticClass: "badge badge-pill badge-success",
+              attrs: {
+                "data-toggle": "tooltip",
+                title: "",
+                "data-original-title": "1 New Messages"
+              }
+            },
+            [_vm._v("5")]
+          )
+        ])
+      ])
+    ])
   }
 ]
 render._withStripped = true
@@ -70094,6 +70595,33 @@ var render = function() {
                         _c("i", { staticClass: "fa fa-map-marker pr-15" }),
                         _vm._v(_vm._s(_vm.profile.street))
                       ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "user-social-acount" },
+                        [
+                          _c(
+                            "router-link",
+                            {
+                              staticClass:
+                                "btn btn-block btn-social btn-foursquare",
+                              attrs: {
+                                to: {
+                                  name: "Chat",
+                                  params: { slug: _vm.profile.slug }
+                                }
+                              }
+                            },
+                            [
+                              _c("i", { staticClass: "fa fa-comments-o" }),
+                              _vm._v(
+                                " Send Message\r\n                            "
+                              )
+                            ]
+                          )
+                        ],
+                        1
+                      ),
                       _vm._v(" "),
                       _c("p", { staticClass: "mt-25" }, [
                         _vm._v("Social Profile")
@@ -71993,20 +72521,20 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "box-body" }, [
-              _c(
-                "div",
-                {
-                  staticClass: "direct-chat-messages chat-app",
-                  staticStyle: {
-                    width: "auto",
-                    height: "500px",
-                    overflow: "auto"
-                  },
-                  attrs: { id: "chat-app" }
-                },
-                _vm._l(_vm.messages, function(message) {
-                  return _vm.messages.length > 0
-                    ? _c(
+              _vm.messages.length > 0
+                ? _c(
+                    "div",
+                    {
+                      staticClass: "direct-chat-messages chat-app",
+                      staticStyle: {
+                        width: "auto",
+                        height: "500px",
+                        overflow: "auto"
+                      },
+                      attrs: { id: "chat-app" }
+                    },
+                    _vm._l(_vm.messages, function(message) {
+                      return _c(
                         "div",
                         {
                           key: message.id,
@@ -72061,10 +72589,22 @@ var render = function() {
                           ])
                         ]
                       )
-                    : _vm._e()
-                }),
-                0
-              )
+                    }),
+                    0
+                  )
+                : _c(
+                    "div",
+                    {
+                      staticClass: "direct-chat-messages chat-app",
+                      staticStyle: {
+                        width: "auto",
+                        height: "500px",
+                        overflow: "auto"
+                      },
+                      attrs: { id: "chat-app" }
+                    },
+                    [_vm._m(0)]
+                  )
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "box-footer" }, [
@@ -72107,7 +72647,6 @@ var render = function() {
                     attrs: { type: "text", placeholder: "Type Message ..." },
                     domProps: { value: _vm.newMessage },
                     on: {
-                      keydown: _vm.isTyping,
                       keyup: function($event) {
                         if (
                           !$event.type.indexOf("key") &&
@@ -72157,7 +72696,36 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "no-message-container" }, [
+      _c("div", { staticClass: "row mb-5" }, [
+        _c("div", { staticClass: "col-md-12" }, [
+          _c("img", {
+            staticClass: "img-fluid",
+            attrs: { src: "/images/no_message.svg", alt: "image" }
+          })
+        ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "p",
+        {
+          staticClass: "lead text-center",
+          staticStyle: {
+            "font-size": "16px",
+            "font-weigth": "700",
+            color: "#828282"
+          }
+        },
+        [_vm._v("Start A Conversation")]
+      )
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -96996,6 +97564,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Header_vue_vue_type_template_id_1f42fb90___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Header_vue_vue_type_template_id_1f42fb90___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/MiniChatroom.vue":
+/*!**************************************************!*\
+  !*** ./resources/js/components/MiniChatroom.vue ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _MiniChatroom_vue_vue_type_template_id_66d87895___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MiniChatroom.vue?vue&type=template&id=66d87895& */ "./resources/js/components/MiniChatroom.vue?vue&type=template&id=66d87895&");
+/* harmony import */ var _MiniChatroom_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MiniChatroom.vue?vue&type=script&lang=js& */ "./resources/js/components/MiniChatroom.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _MiniChatroom_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _MiniChatroom_vue_vue_type_template_id_66d87895___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _MiniChatroom_vue_vue_type_template_id_66d87895___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/MiniChatroom.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/MiniChatroom.vue?vue&type=script&lang=js&":
+/*!***************************************************************************!*\
+  !*** ./resources/js/components/MiniChatroom.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MiniChatroom_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./MiniChatroom.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MiniChatroom.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MiniChatroom_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/MiniChatroom.vue?vue&type=template&id=66d87895&":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/components/MiniChatroom.vue?vue&type=template&id=66d87895& ***!
+  \*********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MiniChatroom_vue_vue_type_template_id_66d87895___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./MiniChatroom.vue?vue&type=template&id=66d87895& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MiniChatroom.vue?vue&type=template&id=66d87895&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MiniChatroom_vue_vue_type_template_id_66d87895___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MiniChatroom_vue_vue_type_template_id_66d87895___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

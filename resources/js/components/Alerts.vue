@@ -61,7 +61,12 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
+      auth: Laravel.user,
       notChatPage: true,
+
+      messageSound: new Audio("/sounds/newMessage.mp3"),
+      mailSound: new Audio("/sounds/newMail.mp3"),
+      broadcastSound: new Audio("/sounds/newBroadcast.mp3"),
 
       user: "",
       avatar: "",
@@ -101,7 +106,7 @@ export default {
 
     initialize() {
       if (this.notChatPage) {
-        Echo.private("chat").listen("NewMessage", e => {
+        Echo.private('chat.' + this.auth.id).listen("NewMessage", e => {
           console.log("Message Alert:" + e);
 
           this.user = e.message.user.name;
@@ -136,18 +141,21 @@ export default {
     },
 
     showMessage() {
+      this.messageSound.play();
       setTimeout(function() {
         $("#alertbottomright").fadeIn(350);
       }, 5000);
     },
 
     showMail() {
+      this.mailSound.play();
       setTimeout(function() {
         $(".alerttop2").fadeIn(350);
       }, 5000);
     },
 
     showBroadcast() {
+      this.broadcastSound.play();
       setTimeout(function() {
         $(".alertbottom2").fadeIn(350);
       }, 2000);
