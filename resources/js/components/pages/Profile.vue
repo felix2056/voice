@@ -73,7 +73,7 @@
                       {{ profile.street }}
                     </p>
 
-                    <div class="user-social-acount">
+                    <div v-if="profile.id != user.id" class="user-social-acount">
                       <router-link
                         :to="{ name: 'Chat', params: { slug: profile.slug  } }"
                         class="btn btn-block btn-social btn-foursquare"

@@ -72281,21 +72281,24 @@ var render = function() {
                   _vm._v(_vm._s(_vm.profile.roles[0].name))
                 ]),
                 _vm._v(" "),
-                _c("div", { staticClass: "row social-states" }, [
-                  _c("div", { staticClass: "col-12 text-center" }, [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-block btn-social btn-linkedin",
-                        on: { click: _vm.pickAvatar }
-                      },
-                      [
-                        _c("i", { staticClass: "ion ion-image" }),
-                        _vm._v(" change avatar\n                ")
-                      ]
-                    )
-                  ])
-                ]),
+                _vm.profile.id == _vm.user.id
+                  ? _c("div", { staticClass: "row social-states" }, [
+                      _c("div", { staticClass: "col-12 text-center" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass:
+                              "btn btn-block btn-social btn-linkedin",
+                            on: { click: _vm.pickAvatar }
+                          },
+                          [
+                            _c("i", { staticClass: "ion ion-image" }),
+                            _vm._v(" change avatar\n                ")
+                          ]
+                        )
+                      ])
+                    ])
+                  : _vm._e(),
                 _vm._v(" "),
                 _c("div", { staticClass: "row" }, [
                   _c("div", { staticClass: "col-12" }, [
@@ -72327,30 +72330,32 @@ var render = function() {
                         )
                       ]),
                       _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "user-social-acount" },
-                        [
-                          _c(
-                            "router-link",
-                            {
-                              staticClass:
-                                "btn btn-block btn-social btn-foursquare",
-                              attrs: {
-                                to: {
-                                  name: "Chat",
-                                  params: { slug: _vm.profile.slug }
-                                }
-                              }
-                            },
+                      _vm.profile.id != _vm.user.id
+                        ? _c(
+                            "div",
+                            { staticClass: "user-social-acount" },
                             [
-                              _c("i", { staticClass: "fa fa-comments-o" }),
-                              _vm._v(" Send Message\n                    ")
-                            ]
+                              _c(
+                                "router-link",
+                                {
+                                  staticClass:
+                                    "btn btn-block btn-social btn-foursquare",
+                                  attrs: {
+                                    to: {
+                                      name: "Chat",
+                                      params: { slug: _vm.profile.slug }
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("i", { staticClass: "fa fa-comments-o" }),
+                                  _vm._v(" Send Message\n                    ")
+                                ]
+                              )
+                            ],
+                            1
                           )
-                        ],
-                        1
-                      ),
+                        : _vm._e(),
                       _vm._v(" "),
                       _c("p", { staticClass: "mt-25" }, [
                         _vm._v("Social Profile")
