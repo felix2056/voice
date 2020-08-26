@@ -49,7 +49,7 @@
 
               <p class="text-center">{{ profile.roles[0].name }}</p>
 
-              <div class="row social-states">
+              <div v-if="profile.id == user.id" class="row social-states">
                 <div class="col-12 text-center">
                   <button @click="pickAvatar" class="btn btn-block btn-social btn-linkedin">
                     <i class="ion ion-image"></i> change avatar
