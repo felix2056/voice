@@ -13,10 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/broadcast', function() {
-    broadcast(new \App\Events\NewMessage('Sent from my Voice application'));
-    return 'ok';
-});
+// Route::get('/broadcast', function() {
+//     broadcast(new \App\Events\NewMessage('Sent from my Voice application'));
+//     return 'ok';
+// });
 
 Route::get('/', function () {
     return view('home');
@@ -26,6 +26,9 @@ Auth::routes();
 
 Route::group(['middleware' => ['auth']], function () {
     Route::group(['prefix' => 'api'], function () {
+        //Payment Routes
+        Route::post('/create-checkout-session', 'StripeController@createSession');
+
         //Get home statistics
         Route::get('/home-statistics', 'HomeController@getStats')->name('user.home.getStats');
 
@@ -69,6 +72,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/my-posts', 'PostsController@myPosts')->name('user.posts.my-posts');
         Route::get('/post/{slug}', 'PostsController@show')->name('user.posts.show');
         Route::post('/create-post', 'PostsController@store')->name('user.posts.store');
+        Route::post('/delete-post', 'PostsController@destroy')->name('user.posts.delete');
 
         //Recent profiles
         Route::get('/recent-profiles', 'UsersController@recent')->name('user.posts.recent');
@@ -76,6 +80,9 @@ Route::group(['middleware' => ['auth']], function () {
         //Admin settings
         Route::any('/settings', 'AdminController@settings')->name('admin.settings');
         Route::post('/trigger-broadcast', 'BroadcastController@triggerBroadcast')->name('user.triggerBroadcast');
+
+        //profile update
+        Route::post('/update-user', 'UsersController@update')->name('user.update');
     });
 
     Route::get('/dashboard', function () {

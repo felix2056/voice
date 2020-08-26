@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 use App\User;
+use Illuminate\Support\Facades\Storage;
 
 class UsersController extends Controller
 {
@@ -42,18 +43,18 @@ class UsersController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'email' => 'required|email|unique:users',
             'phonenumber' => 'required|numeric',
             'street' => 'required',
             'city' => 'required',
             'state' => 'required',
-            'postalcode' => 'required',
-
-            'facebook' => 'required',
-            'instagram' => 'required',
-            'twitter' => 'required',
-            'linkedin' => 'required',
+            'postalcode' => 'required'
         ]);
+
+        if ( $request->has('email')) {
+            if ( $request->email != Auth::user()->email ) {
+                $validator['email'] = 'email|unique:users';
+            }
+        }
 
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 418);
@@ -62,10 +63,10 @@ class UsersController extends Controller
         $user = User::find(Auth::user()->id);
         
         $user->name = $request->name;
-        $user->email = $request->email;
+        //$user->email = $request->email;
 
         //Set email verified at to null so user must re-confirm his new email
-        $user->email_verified_at = null;
+        //$user->email_verified_at = null;
 
         $user->phonenumber = $request->phonenumber;
         $user->street = $request->street;
@@ -79,6 +80,18 @@ class UsersController extends Controller
         $user->linkedin = $request->linkedin;
 
         $user->save();
+
+        if ($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
+
+            $exists = Storage::exists('avatars/'. $user->id .'/avatar.png');
+
+            if ($exists) {
+               Storage::delete('avatars/'. $user->id .'/avatar.png');
+            }
+
+            $avatar->storeAs('public/avatars/'. $user->id, 'avatar.png');
+        }
 
         return response()->json([
             'success' => 'Your records has been updated'

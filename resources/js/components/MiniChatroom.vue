@@ -73,7 +73,7 @@
                     type="text"
                     name="message"
                     v-model="newMessage"
-                    @keyup.enter="sendMessage"
+                    @keydown.enter.prevent="sendMessage"
                     placeholder="Type Message ..."
                     class="form-control"
                   />
@@ -101,7 +101,9 @@ export default {
       user: Laravel.user,
 
       messages: [],
-      newMessage: ""
+      newMessage: "",
+
+      sending: false
     };
   },
 
@@ -162,6 +164,12 @@ export default {
         return;
       }
 
+      if (this.sending) {
+        return;
+      }
+
+      this.sending = true;
+
       let message = this.newMessage;
       let url = `/send-message-chatroom`;
 
@@ -172,12 +180,14 @@ export default {
         .then(response => {
           this.messages.push(response.data.message);
           this.newMessage = "";
+          this.sending = false;
 
           setTimeout(function() {
             msg_body.scrollTop = msg_body.scrollHeight;
           }, 200);
         })
         .catch(error => {
+          this.sending = false;
           error.response.data.error.message
             ? (this.errors.message = error.response.data.error.message)
             : null;

@@ -186,7 +186,7 @@
         <ul class="sidebar-menu tree" data-widget="tree">
           <li class="nav-devider"></li>
           <li class="header nav-small-cap">GENERAL</li>
-          <li>
+          <li v-if="!$is('Viewer')">
             <router-link :to="{ name: 'Home' }">
               <i class="icon-home"></i>
               <span>Dashboard</span>
@@ -208,14 +208,14 @@
             </router-link>
           </li>
 
-          <li>
+          <li v-if="!$is('Viewer')">
             <router-link :to="{ name: 'Members' }">
               <i class="icon-people"></i>
               <span>Members</span>
             </router-link>
           </li>
 
-          <li class="treeview">
+          <!-- <li class="treeview">
             <a href="#">
               <i class="fa fa-envelope"></i>
               <span>Mailbox</span>
@@ -231,12 +231,19 @@
                 <router-link :to="{ name: 'Compose' }">Compose</router-link>
               </li>
             </ul>
-          </li>
+          </li> -->
 
-          <li>
+          <!-- <li>
             <router-link :to="{ name: 'ChatRoom' }">
               <i class="icon-envelope"></i>
               <span>Chat</span>
+            </router-link>
+          </li> -->
+
+          <li>
+            <router-link :to="{ name: 'Billing' }">
+              <i class="icon-wallet"></i>
+              <span>Billing</span>
             </router-link>
           </li>
 
@@ -296,11 +303,6 @@
 
     <!-- Right side column. contains easy access to the chatroom -->
     <aside class="control-sidebar control-sidebar-dark">
-      <!-- Create the tabs -->
-      <!-- <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-        <li class="nav-item"><a href="#control-sidebar-theme-demo-options-tab" class="active show" data-toggle="tab"><i class="fa fa-wrench"></i></a></li><li class="nav-item"><a href="#control-sidebar-home-tab" data-toggle="tab" class=""><i class="fa fa-home"></i></a></li>
-        <li class="nav-item"><a href="#control-sidebar-settings-tab" data-toggle="tab" class=""><i class="fa fa-cog fa-spin"></i></a></li>
-      </ul> -->
       <!-- Tab panes -->
       <div class="tab-content">
         <mini-chatroom></mini-chatroom>

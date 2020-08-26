@@ -7189,7 +7189,7 @@ ul.flexbox {
     cursor: default;
 }
 .nav.no-gutters > .nav-link:first-child, .nav.no-gutters .nav-item:first-child .nav-link {
-    padding-left: 0;
+    /* padding-left: 0; */
 }
 .nav-dot-separated .nav-link:hover, .nav-dot-separated .nav-link:focus, .nav-dot-separated .nav-link.active {
     background-color: transparent;

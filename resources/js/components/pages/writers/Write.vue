@@ -1,5 +1,5 @@
 <template>
-  <div class="content-wrapper">
+  <div class="content-wrapper" style="min-height: 644px;">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>Write News</h1>
@@ -27,28 +27,6 @@
                 <div class="form-group">
                   <input class="form-control" v-model="input.headline" placeholder="Headline" />
                   <span class="text-danger">{{ String(errors.headline) }}</span>
-                </div>
-                <div class="form-group">
-                  <editor
-                    api-key="89wibrodin74xxczxdk9eqmk20bhmmhphl3gh2dj3owgi3fo"
-                    v-model="input.body"
-                    :init="{
-                        height: 300,
-                        menubar: false,
-                                plugins: [
-                                'advlist autolink lists link image charmap print preview anchor',
-                                'searchreplace visualblocks code fullscreen',
-                                'insertdatetime media table paste code help wordcount'
-                                ],
-                                mediaembed_max_width: 450,
-                                content_style: 'body { font-family: Arial; background: #252525; color: white; font-size: 14pt; }',
-                                toolbar:
-                                'undo redo | formatselect | bold italic backcolor | \
-                                alignleft aligncenter alignright alignjustify | \
-                                bullist numlist outdent indent | removeformat | help'
-                            }"
-                  />
-                  <span class="text-danger">{{ String(errors.body) }}</span>
                 </div>
               </div>
               <div class="box-footer bg-dark">

@@ -105,9 +105,61 @@ router.afterEach((to, from) => {
     window.scrollTo(0, 0);
 });
 
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.requiresAdminAccess)) {
+        if (Vue.prototype.$is('Admin')) {
+            next();
+        } else{
+            Toast.fire({
+                type: "error",
+                title: "Access Restricted!"
+            });
+            
+            router.push("Forbidden")
+        }
+    } else {
+        next();
+    }
+});
+
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.requiresWriterAccess)) {
+        if (Vue.prototype.$is('Admin') || Vue.prototype.$is('Writer')) {
+            next();
+        } else{
+            Toast.fire({
+                type: "error",
+                title: "Access Restricted to Writers Only!"
+            });
+            
+            router.push("Forbidden")
+        }
+    } else {
+        next();
+    }
+});
+
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.noAccessForViewers)) {
+        if (Vue.prototype.$is('Viewer')) {
+            // Toast.fire({
+            //     type: "error",
+            //     title: "Access Restricted For This Account!"
+            // });
+            //next(false);
+            router.push("Newsfeed");
+        } else{
+            next();
+        }
+    } else {
+        next();
+    }
+});
+
 const app = new Vue({
     store,
     router,
+    user: Laravel.user,
 
     created() {
         this.fetchSiteData();

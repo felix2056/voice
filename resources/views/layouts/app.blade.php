@@ -80,7 +80,7 @@
 
 </head>
 
-<body class="skin-yellow sidebar-mini wysihtml5-supported fixed" data-gr-c-s-loaded="true" style="height: auto; min-height: 100%;">
+<body class="skin-yellow sidebar-mini wysihtml5-supported fixed" data-gr-c-s-loaded="true">
     <script>
         window.Laravel = {!! json_encode([
             'csrfToken' => csrf_token(),
@@ -90,7 +90,7 @@
         ]) !!};
     </script>
 
-    <div id="app" class="wrapper" style="height: auto; min-height: 100%;">
+    <div id="app" class="wrapper">
 		@yield('content')
     </div>
 	<!-- ./wrapper -->
@@ -125,10 +125,7 @@
     <script src="http://www.amcharts.com/lib/3/plugins/export/export.min.js" type="text/javascript"></script>
     <script src="http://www.amcharts.com/lib/3/themes/patterns.js" type="text/javascript"></script>
     <script src="http://www.amcharts.com/lib/3/themes/dark.js" type="text/javascript"></script> --}}
-
-    <!-- webticker -->
-    <script src="{{ asset('assets/vendor_components/Web-Ticker-master/jquery.webticker.min.js') }}"></script>
-
+    
     <!-- EChartJS JavaScript -->
     <script src="{{ asset('assets/vendor_components/echarts-master/dist/echarts-en.min.js') }}"></script>
     <script src="{{ asset('assets/vendor_components/echarts-liquidfill-master/dist/echarts-liquidfill.min.js') }}"></script>
@@ -149,13 +146,27 @@
     <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
     {{-- <script src="{{ asset('assets/js/pages/dashboard-chart.js') }}"></script> --}}
     <script src="{{ asset('assets/js/pages/notification.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/mailbox.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/pages/mailbox.js') }}"></script> --}}
     {{-- <script src="{{ asset('assets/js/pages/widget-weather.js') }}"></script> --}}
 
     <!-- Crypto_Admin for demo purposes -->
-    <script src="{{ asset('assets/js/demo.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/demo.js') }}"></script> --}}
 
     <!-- app.js -->
-	<script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
+    
+    <!-- Vticker -->
+    <script src="{{ asset('assets/js/vticker.js') }}"></script>
+    
+    <!-- webticker -->
+    <script src="{{ asset('assets/vendor_components/Web-Ticker-master/jquery.webticker.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            // $(function() {
+            //     $('#webticker-2').vTicker();
+            // });
+            $('#webticker-2').webTicker();
+        })
+    </script>
 </body>
 </html>

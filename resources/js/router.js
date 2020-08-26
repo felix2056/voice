@@ -5,6 +5,7 @@ import VueRouter from "vue-router";
 import Home from "./components/pages/Home";
 import Newsfeed from "./components/pages/Newsfeed";
 import Pricing from "./components/pages/Pricing";
+import Billing from "./components/pages/Billing";
 
 //Mail
 import Mailbox from "./components/pages/mailbox/Mailbox";
@@ -27,7 +28,8 @@ import ChatRoom from "./components/pages/ChatRoom";
 
 import Settings from "./components/pages/Settings";
 
-// import NotFound from "./components/NotFound";
+import NotFound from "./components/pages/NotFound";
+import Forbidden from "./components/pages/Forbidden";
 
 Vue.use(VueRouter);
 
@@ -37,7 +39,10 @@ const router = new VueRouter({
         {
             path: "/dashboard",
             name: "Home",
-            component: Home
+            component: Home,
+            meta: {
+                noAccessForViewers: true
+            } 
         },
         {
             path: "/dashboard/newsfeed",
@@ -67,7 +72,10 @@ const router = new VueRouter({
         {
             path: "/dashboard/users",
             name: "Users",
-            component: Users
+            component: Users,
+            meta: {
+                requiresAdminAccess: true
+            } 
         },
         {
             path: "/dashboard/profile/:slug",
@@ -77,17 +85,28 @@ const router = new VueRouter({
         {
             path: "/dashboard/write",
             name: "Write",
-            component: Write
+            component: Write,
+            meta: {
+                requiresWriterAccess: true
+            } 
         },
         {
             path: "/dashboard/my-posts",
             name: "MyPosts",
-            component: MyPosts
+            component: MyPosts,
+            meta: {
+                requiresWriterAccess: true
+            } 
         },
         {
             path: "/dashboard/pricing",
             name: "Pricing",
             component: Pricing
+        },
+        {
+            path: "/dashboard/billing",
+            name: "Billing",
+            component: Billing
         },
         {
             path: "/dashboard/chat/:slug",
@@ -107,17 +126,25 @@ const router = new VueRouter({
         {
             path: "/dashboard/settings",
             name: "Settings",
-            component: Settings
+            component: Settings,
+            meta: {
+                requiresAdminAccess: true
+            } 
+        },
+        {
+            path: "/forbidden",
+            name: "Forbidden",
+            component: Forbidden
+        },
+        {
+            path: "/404",
+            name: "404",
+            component: NotFound
+        },
+        {
+            path: "*",
+            redirect: "/404"
         }
-        // {
-        //     path: "/404",
-        //     name: "404",
-        //     component: NotFound
-        // },
-        // {
-        //     path: "*",
-        //     redirect: "/404"
-        // }
     ],
 
     scrollBehavior(to, from, savedPosition) {

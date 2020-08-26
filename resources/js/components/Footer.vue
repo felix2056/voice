@@ -5,10 +5,9 @@
         class="nav nav-primary nav-dotted nav-dot-separated justify-content-center justify-content-md-end"
       >
         <li class="nav-item">
-          <a class="nav-link" href="javascript:void(0)">FAQ</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Voice</a>
+          <router-link :to="{ name: 'Home' }">
+              Voice
+            </router-link>
         </li>
       </ul>
     </div>© 2020
