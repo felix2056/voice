@@ -20,6 +20,9 @@ import Conversations from "./components/pages/chat/Conversations";
 import Write from "./components/pages/writers/Write";
 import MyPosts from "./components/pages/writers/MyPosts";
 
+//Broadcasters
+import Broadcasts from "./components/pages/broadcasters/Broadcasts";
+
 import Members from "./components/pages/Members";
 import Users from "./components/pages/Users";
 import Profile from "./components/pages/Profile";
@@ -96,6 +99,14 @@ const router = new VueRouter({
             component: MyPosts,
             meta: {
                 requiresWriterAccess: true
+            } 
+        },
+        {
+            path: "/dashboard/broadcasts",
+            name: "Broadcasts",
+            component: Broadcasts,
+            meta: {
+                requiresBroadcasterAccess: true
             } 
         },
         {

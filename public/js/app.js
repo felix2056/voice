@@ -7052,14 +7052,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
       Echo["private"]("broadcast").listen("NewBroadcast", function (data) {
         console.log("Broadcast Alert:" + data);
+        _this.user = data.username;
+        _this.avatar = data.avatar;
+        _this.slug = '';
 
-        if (data.subtype === 'offer') {
-          _this.user = _this.getSettingsByIndex('site_name');
-          _this.avatar = '/storage/site/' + _this.getSettingsByIndex('logo');
-          _this.slug = '';
+        _this.showBroadcast(); // if (data.subtype === 'offer') {
+        //   this.user = this.getSettingsByIndex('site_name');
+        //   this.avatar = '/storage/site/' + this.getSettingsByIndex('logo');
+        //   this.slug = '';
+        //   this.showBroadcast();
+        // }
 
-          _this.showBroadcast();
-        }
       });
     },
     showMessage: function showMessage() {
@@ -7148,10 +7151,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _MiniChatroom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MiniChatroom */ "./resources/js/components/MiniChatroom.vue");
 /* harmony import */ var vue_loading_spinner__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-loading-spinner */ "./node_modules/vue-loading-spinner/src/index.js");
-/* harmony import */ var _utils_ICEServers__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils/ICEServers */ "./resources/js/components/utils/ICEServers.js");
-/* harmony import */ var _utils_logging__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utils/logging */ "./resources/js/components/utils/logging.js");
-/* harmony import */ var _Notifications__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Notifications */ "./resources/js/components/Notifications.vue");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _utils_logging__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils/logging */ "./resources/js/components/utils/logging.js");
+/* harmony import */ var _Notifications__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Notifications */ "./resources/js/components/Notifications.vue");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -7576,7 +7578,67 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -7586,43 +7648,32 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   components: {
     MiniChatroom: _MiniChatroom__WEBPACK_IMPORTED_MODULE_1__["default"],
     RotateSquare5: vue_loading_spinner__WEBPACK_IMPORTED_MODULE_2__["RotateSquare5"],
-    notifications: _Notifications__WEBPACK_IMPORTED_MODULE_5__["default"]
+    notifications: _Notifications__WEBPACK_IMPORTED_MODULE_4__["default"]
   },
   data: function data() {
     return {
       user: Laravel.user,
       csrf_token: Laravel.csrfToken,
-      broadcasting: false,
-      isBroadcaster: false,
-      //disables the play button for users if no broadcast is available
+      //Stream for viewers and listeners
       broadcastAvailable: false,
-      //audio
-      myAudio: {},
-      //offer received from person who requested video call
-      offer: null,
-      // Media config Voice Call
+      recording: false,
+      recorded: false,
       broadcastConstraints: {
         audio: {
           echoCancellation: true,
           noiseSuppression: true,
           autoGainControl: false
-        },
-        video: false
+        }
       },
-      // local & remote video stream
-      localStream: undefined,
-      remoteStream: undefined,
-      // STUN ice servers
-      configuration: _utils_ICEServers__WEBPACK_IMPORTED_MODULE_3__["servers"],
-      // Peer connection
-      pc: undefined,
-      // Offer config
-      offerOptions: {
-        offerToReceiveAudio: 1,
-        offerToReceiveVideo: 1
-      },
-      connectedUsers: 0,
+      //recording
+      rec: {},
+      recordedBroadcast: null,
+      audioChunks: [],
+      //audio
+      audio: {},
       loading: false,
+      uploading: false,
+      uploadPercentage: 0,
       callout: {
         "class": "",
         icon: "",
@@ -7637,28 +7688,51 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     };
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_6__["mapGetters"])(["getSettingsByIndex"])),
+  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_5__["mapGetters"])(["getSettingsByIndex"])), {}, {
+    recordMsg: function recordMsg() {
+      if (this.recording && !this.recorded) {
+        return "Recording...";
+      } else if (this.recorded && !this.recording) {
+        return "Record Again";
+      } else {
+        return "Record";
+      }
+    }
+  }),
   mounted: function mounted() {
-    var _this = this;
-
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.next = 2;
-              return _this.initializeBroadcast();
-
-            case 2:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }))();
+    this.initailize();
   },
   methods: {
-    initializeBroadcast: function initializeBroadcast() {
+    initailize: function initailize() {
+      var _this = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        var self;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                self = _this;
+                Echo["private"]("broadcast").listen("NewBroadcast", function (data) {
+                  var remoteAudio = document.getElementById("remoteAudio");
+                  remoteAudio.src = data.source;
+                  self.broadcastAvailable = true; //alert for members
+
+                  self.alert["class"] = "alert-success";
+                  self.alert.icon = "fa fa-success";
+                  self.alert.header = "Broadcast Available..";
+                  self.alert.body = "Play the broadcast";
+                });
+
+              case 2:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    },
+    recordBroadcast: function recordBroadcast() {
       var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
@@ -7666,27 +7740,32 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this2.user.name, " initializing and setting up in case of broadcast"));
-                Echo["private"]("broadcast").listen("NewBroadcast", function (data) {
-                  if (data.type === "signal") {
-                    _this2.onSignalMessage(data);
-                  } else {
-                    console.log("received unknown message type");
-                  }
-                }); // Set the audio and audio element in case there would be need for them
+                if (!_this2.recording) {
+                  _context2.next = 2;
+                  break;
+                }
 
-                _this2.myAudio = document.getElementById("localAudio");
-                _this2.remoteAudio = document.getElementById('remoteAudio');
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])(_this2.myAudio); // Create peer connection
+                return _context2.abrupt("return");
 
-                _this2.createPeerConnection(); // Event listeners
+              case 2:
+                _this2.loading = true;
+                _this2.recording = true; //Default everything back
 
+                _this2.recorded = false;
+                _this2.rec = {};
+                _this2.recordedBroadcast = {};
+                _this2.audioChunks = [];
+                _this2.audio = {};
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("".concat(_this2.user.name, " wants to record a broadcast"));
+                _this2.callout["class"] = "callout-info";
+                _this2.callout.icon = "fa fa-info";
+                _this2.callout.header = "Initailizing broadcast recorder..";
+                _this2.callout.body = "".concat(_this2.user.name, " wants to record a broadcast");
+                $("#callout").fadeIn(500);
+                _context2.next = 17;
+                return _this2.getUserVoiceMedia();
 
-                _this2.onIceCandidates();
-
-                _this2.onAddStream();
-
-              case 8:
+              case 17:
               case "end":
                 return _context2.stop();
             }
@@ -7694,621 +7773,235 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }, _callee2);
       }))();
     },
-    requestBroadcast: function requestBroadcast() {
+    getUserVoiceMedia: function getUserVoiceMedia() {
       var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        var self, stream, container, playAudio;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                if (!_this3.broadcasting) {
-                  _context3.next = 2;
+                self = _this3;
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("Requesting ".concat(_this3.user.name, " voice stream"));
+                _this3.callout.body = "Requesting ".concat(_this3.user.name, " voice stream");
+                _this3.alert.body = "Requesting ".concat(_this3.user.name, " voice stream");
+
+                if (!("mediaDevices" in navigator)) {
+                  _context3.next = 45;
                   break;
                 }
 
-                return _context3.abrupt("return");
-
-              case 2:
-                _this3.loading = true;
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this3.user.name, " wants to start a broadcast"));
-                _this3.callout["class"] = 'callout-info';
-                _this3.callout.icon = 'fa fa-info';
-                _this3.callout.header = 'Initailizing broadcast..';
-                _this3.callout.body = "".concat(_this3.user.name, " wants to start a broadcast");
-                _this3.isBroadcaster = true;
-                $('#callout').fadeIn(500);
+                //callout for admin
+                _this3.callout["class"] = "callout-warning";
+                _this3.callout.icon = "fa fa-warning";
+                _this3.callout.header = "Preparing Media Devices";
+                _this3.callout.body = "Getting user permission for voice media";
+                _context3.prev = 9;
                 _context3.next = 12;
-                return _this3.getUserVoiceMedia();
+                return navigator.mediaDevices.getUserMedia(_this3.broadcastConstraints);
 
               case 12:
-                _context3.next = 14;
-                return _this3.getAudio();
+                _context3.t1 = _context3.sent;
 
-              case 14:
-                _this3.startBroadcast();
+                if (_context3.t1) {
+                  _context3.next = 15;
+                  break;
+                }
+
+                _context3.t1 = navigator.mediaDevices.webkitGetUserMedia(_this3.broadcastConstraints);
 
               case 15:
+                _context3.t0 = _context3.t1;
+
+                if (_context3.t0) {
+                  _context3.next = 18;
+                  break;
+                }
+
+                _context3.t0 = navigator.mediaDevices.mozGetUserMedia(_this3.broadcastConstraints);
+
+              case 18:
+                stream = _context3.t0;
+                _this3.rec = new MediaRecorder(stream);
+                container = document.getElementById("recording-container"); // 2nd audio tag for play the audio
+
+                playAudio = document.getElementById("adioPlay");
+                _this3.audio = document.createElement("audio"); // callout for admin
+
+                _this3.callout["class"] = "callout-warning";
+                _this3.callout.icon = "fa fa-warning";
+                _this3.callout.header = "Stream Received!";
+                _this3.callout.body = "Starting voice recording";
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("Starting voice recording");
+
+                if ("srcObject" in _this3.audio) {
+                  _this3.audio.srcObject = stream;
+                } else {
+                  _this3.audio.src = window.URL.createObjectURL(stream);
+                }
+
+                container.append(_this3.audio);
+
+                _this3.audio.onloadedmetadata = function (ev) {
+                  self.audio.play();
+                };
+
+                _this3.rec.ondataavailable = function (ev) {
+                  self.audioChunks.push(ev.data);
+                }; // Convert the audio data in to blob
+                // after stopping the recording
+
+
+                _this3.rec.onstop = function (ev) {
+                  Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("Stopping broadcast");
+                  self.callout["class"] = "callout-warning";
+                  self.callout.icon = "fa fa-danger";
+                  self.callout.header = "Preparing Recorded Audio";
+                  self.callout.body = "getting audio blob ready to send to the server!"; // blob of type mp3
+
+                  self.recordedBroadcast = new Blob(self.audioChunks, {
+                    type: "audio/mp3;"
+                  }); // After fill up the chunk
+                  // array make it empty
+
+                  self.audioChunks = []; // Creating audio url with reference
+                  // of created blob named 'audioData'
+
+                  var audioSrc = window.URL.createObjectURL(self.recordedBroadcast); // Pass the audio url to the 2nd video tag and default the original audio
+
+                  playAudio.src = audioSrc;
+
+                  if ("srcObject" in self.audio) {
+                    self.audio.srcObject = null;
+                  } else {
+                    self.audio.src = null;
+                  } //Audio prepared and ready to upload to server
+
+
+                  self.callout["class"] = "callout-success";
+                  self.callout.icon = "fa fa-success";
+                  self.callout.header = "Recording Complete";
+                  self.callout.body = "You can now proceed to upload to server or record a new audio!";
+                  self.recording = false;
+                  self.recorded = true;
+                }; //start
+
+
+                _this3.startRecording();
+
+                _context3.next = 45;
+                break;
+
+              case 36:
+                _context3.prev = 36;
+                _context3.t2 = _context3["catch"](9);
+                _this3.loading = false;
+                _this3.recording = false;
+                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("getUserMedia error: ".concat(_context3.t2)); //callout for admin
+
+                _this3.callout["class"] = "callout-danger";
+                _this3.callout.icon = "fa fa-ban";
+                _this3.callout.header = "Failed to initiate broadcast recording..";
+                _this3.callout.body = "Make sure you give permission to use your microphone. GetUserMedia error: ".concat(_context3.t2);
+
+              case 45:
               case "end":
                 return _context3.stop();
             }
           }
-        }, _callee3);
+        }, _callee3, null, [[9, 36]]);
       }))();
     },
-    getUserVoiceMedia: function getUserVoiceMedia() {
+    startRecording: function startRecording() {
+      this.rec.start();
+      this.recording = true; //callout for admin
+
+      this.callout["class"] = "callout-success";
+      this.callout.icon = "fa fa-warning";
+      this.callout.header = "Recording...";
+      this.callout.body = "Recording voice media";
+      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])(this.rec.state);
+    },
+    stopRecording: function stopRecording() {
+      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("Stopping broadcast");
+      this.callout["class"] = "callout-danger";
+      this.callout.icon = "fa fa-danger";
+      this.callout.header = "Stopping Recording..";
+      this.callout.body = "".concat(this.user.name, " wants to stop recording broadcast");
+      this.rec.stop();
+      this.recording = false;
+      this.loading = false;
+      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])(this.rec.state); //this.rec.clear();
+      //$("#modal-fill").modal("hide");
+    },
+    saveRecording: function saveRecording() {
       var _this4 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
-        var stream;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Requesting ".concat(_this4.user.name, " voice stream"));
-                _this4.callout.body = "Requesting ".concat(_this4.user.name, " voice stream");
-                _this4.alert.body = "Requesting ".concat(_this4.user.name, " voice stream");
-
-                if (!("mediaDevices" in navigator)) {
-                  _context4.next = 39;
-                  break;
-                }
-
-                _context4.prev = 4;
-                _context4.next = 7;
-                return navigator.mediaDevices.getUserMedia(_this4.broadcastConstraints);
-
-              case 7:
-                _context4.t1 = _context4.sent;
-
-                if (_context4.t1) {
-                  _context4.next = 10;
-                  break;
-                }
-
-                _context4.t1 = navigator.mediaDevices.webkitGetUserMedia(_this4.broadcastConstraints);
-
-              case 10:
-                _context4.t0 = _context4.t1;
-
-                if (_context4.t0) {
-                  _context4.next = 13;
-                  break;
-                }
-
-                _context4.t0 = navigator.mediaDevices.mozGetUserMedia(_this4.broadcastConstraints);
-
-              case 13:
-                stream = _context4.t0;
-                _this4.myAudio.srcObject = stream;
-                _this4.localStream = stream;
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Received local voice stream"); //callout for admin
-
-                _this4.callout["class"] = 'callout-warning';
-                _this4.callout.icon = 'fa fa-warning';
-                _this4.callout.header = "Receiving broadcast..";
-                _this4.callout.body = 'Getting user voice media'; //alert for members
-
-                _this4.alert["class"] = 'alert-warning';
-                _this4.alert.icon = 'fa fa-warning';
-                _this4.alert.header = "Receiving broadcast..";
-                _this4.alert.body = 'Getting user voice media';
-                _context4.next = 39;
-                break;
-
-              case 27:
-                _context4.prev = 27;
-                _context4.t2 = _context4["catch"](4);
-                _this4.loading = false;
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("getUserMedia error: ".concat(_context4.t2)); //callout for admin
-
-                _this4.callout["class"] = 'callout-danger';
-                _this4.callout.icon = 'fa fa-ban';
-                _this4.callout.header = 'Failed to start broadcast..';
-                _this4.callout.body = "You need to give permission to use your microphone. GetUserMedia error: ".concat(_context4.t2); //alert for members
-
-                _this4.alert["class"] = 'alert-danger';
-                _this4.alert.icon = 'fa fa-ban';
-                _this4.alert.header = 'Failed to start broadcast..';
-                _this4.alert.body = "You need to give permission to use your microphone. GetUserMedia error: ".concat(_context4.t2);
-
-              case 39:
-              case "end":
-                return _context4.stop();
-            }
-          }
-        }, _callee4, null, [[4, 27]]);
-      }))();
-    },
-    getAudio: function getAudio() {
-      var audio = this.localStream.getAudioTracks();
-
-      if (audio.length > 0) {
-        Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Using audio device: ".concat(audio[0].label)); //callout for admin
-
-        this.callout["class"] = 'callout-warning';
-        this.callout.icon = 'fa fa-warning';
-        this.callout.header = "Broadcast received..";
-        this.callout.body = "Using audio device: ".concat(audio[0].label); //alert for members
-
-        this.alert["class"] = 'alert-warning';
-        this.alert.icon = 'fa fa-warning';
-        this.alert.header = "Broadcast received..";
-        this.alert.body = "Using audio device: ".concat(audio[0].label);
+      if (this.recording && !this.recorded) {
+        this.callout["class"] = "callout-danger";
+        this.callout.icon = "fa fa-danger";
+        this.callout.header = "Something Went Wrong!";
+        this.callout.body = "Make sure you have a valid recorded broadcast before uploading";
+        return;
       }
-    },
-    // Send signaling data via Scaledrone
-    sendSignal: function sendSignal(details) {
-      var _this5 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
-        var user, message;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
-          while (1) {
-            switch (_context5.prev = _context5.next) {
-              case 0:
-                user = _this5.user.id;
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])(details['content']);
-                message = {
-                  from: user,
-                  type: details['type'],
-                  subtype: details['subtype'],
-                  content: details['content'],
-                  time: new Date()
-                };
-                _context5.next = 5;
-                return axios.post('/trigger-broadcast', {
-                  message: message
-                });
-
-              case 5:
-              case "end":
-                return _context5.stop();
-            }
-          }
-        }, _callee5);
-      }))();
-    },
-    startBroadcast: function startBroadcast() {
-      // Add local stream
-      this.addLocalStream();
-      this.broadcasting = true;
-
-      if (this.isBroadcaster) {
-        this.createBroadcast();
-      } else {
-        this.createAnswer();
+      if (this.recordedBroadcast == null) {
+        this.callout["class"] = "callout-danger";
+        this.callout.icon = "fa fa-danger";
+        this.callout.header = "No Recorded File To Upload";
+        this.callout.body = "The recorded broadcast is empty! Make sure you record a broadcast before uploading";
+        return;
       }
-    },
-    createPeerConnection: function createPeerConnection() {
-      this.pc = new RTCPeerConnection(this.configuration);
-      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(this.user.name, " Created peer connection object"));
-    },
-    addLocalStream: function addLocalStream() {
-      this.pc.addStream(this.localStream);
-    },
-    onIceCandidates: function onIceCandidates() {
-      var _this6 = this;
 
-      // send any ice candidates to the other peer
-      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(this.user.name, " starting onice candidate"));
-      var limit = 0;
-
-      this.pc.onicecandidate = function (_ref) {
-        var candidate = _ref.candidate;
-
-        if (limit == 0) {
-          var details = [];
-          details['type'] = 'signal';
-          details['subtype'] = 'candidate';
-          details['content'] = candidate;
-
-          _this6.sendSignal(details); //Limit the number of ICEs to be sent to avoid recuring multiple times
-
-
-          limit = 1;
-        } else {
-          return;
-        }
+      this.loading = true;
+      this.uploading = true;
+      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_3__["log"])("sending to server");
+      var url = "/upload-broadcast";
+      var formData = new FormData();
+      formData.append("audio", this.recordedBroadcast);
+      var headers = {
+        "Content-Type": "multipart/form-data"
       };
+      axios.post(url, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
+        onUploadProgress: function (progressEvent) {
+          this.uploadPercentage = parseInt(Math.round(progressEvent.loaded / progressEvent.total * 100));
+        }.bind(this)
+      }).then(function (success) {
+        $("#modal-fill").modal("hide");
+        Toast.fire({
+          type: "success",
+          title: "Successfully uploaded broadcast!"
+        });
+        _this4.loading = false;
+        _this4.uploading = false;
+
+        _this4.$router.push({
+          name: 'Broadcasts'
+        });
+      });
     },
-    onAddStream: function onAddStream() {
-      var _this7 = this;
-
-      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(this.user.name, " starting onadd stream"));
-
-      this.pc.onaddstream = function (event) {
-        if (!_this7.remoteAudio.srcObject && event.stream) {
-          _this7.remoteStream = event.stream;
-          _this7.remoteAudio.srcObject = _this7.remoteStream;
-        }
-      };
-    },
-    createBroadcast: function createBroadcast() {
-      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(this.user.name, " wants to start a broadcast"));
-      this.callout["class"] = 'callout-warning';
-      this.callout.icon = 'fa fa-warning';
-      this.callout.header = 'Sending Broadcast...';
-      this.callout.body = "Sending broadcast to all premium members..";
-      this.createOffer();
-    },
-    setRemoteDescription: function setRemoteDescription(remoteDesc) {
-      var _this8 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
-          while (1) {
-            switch (_context6.prev = _context6.next) {
-              case 0:
-                _context6.prev = 0;
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this8.user.name, " setRemoteDescription: start"));
-                _context6.next = 4;
-                return _this8.pc.setRemoteDescription(remoteDesc);
-
-              case 4:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this8.user.name, " setRemoteDescription: finished"));
-                _context6.next = 10;
-                break;
-
-              case 7:
-                _context6.prev = 7;
-                _context6.t0 = _context6["catch"](0);
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Error setting the RemoteDescription with ".concat(_this8.user.name, ". Error: ").concat(_context6.t0));
-
-              case 10:
-              case "end":
-                return _context6.stop();
-            }
-          }
-        }, _callee6, null, [[0, 7]]);
-      }))();
-    },
-    createAnswer: function createAnswer() {
-      var _this9 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee7() {
-        var answer;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee7$(_context7) {
-          while (1) {
-            switch (_context7.prev = _context7.next) {
-              case 0:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this9.user.name, " create an answer: start"));
-                _context7.prev = 1;
-                _context7.next = 4;
-                return _this9.pc.createAnswer();
-
-              case 4:
-                answer = _context7.sent;
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Answer from ".concat(_this9.user.name, "\n ").concat(answer.sdp));
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this9.user.name, " setLocalDescription: start"));
-                _context7.next = 9;
-                return _this9.pc.setLocalDescription(answer);
-
-              case 9:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this9.user.name, " setLocalDescription: finished"));
-                _this9.alert["class"] = 'alert-success';
-                _this9.alert.icon = 'fa fa-check';
-                _this9.alert.header = 'Answering Broadcast...';
-                _this9.alert.body = "".concat(_this9.user.name, " has joined the broadcast");
-
-                _this9.sendSignalingMessage(_this9.pc.localDescription, false);
-
-                _context7.next = 24;
-                break;
-
-              case 17:
-                _context7.prev = 17;
-                _context7.t0 = _context7["catch"](1);
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Error creating the answer from ".concat(_this9.user.name, ". Error: ").concat(_context7.t0));
-                _this9.alert["class"] = 'alert-danger';
-                _this9.alert.icon = 'fa fa-ban';
-                _this9.alert.header = 'Failed To Join Broadcast...';
-                _this9.alert.body = "Error creating the answer from ".concat(_this9.user.name, ". Error: ").concat(_context7.t0);
-
-              case 24:
-              case "end":
-                return _context7.stop();
-            }
-          }
-        }, _callee7, null, [[1, 17]]);
-      }))();
-    },
-    createOffer: function createOffer() {
-      var _this10 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee8() {
-        var offer;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee8$(_context8) {
-          while (1) {
-            switch (_context8.prev = _context8.next) {
-              case 0:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this10.user.name, " create an offer: start"));
-                _context8.prev = 1;
-                _context8.next = 4;
-                return _this10.pc.createOffer(_this10.offerOptions);
-
-              case 4:
-                offer = _context8.sent;
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Offer from ".concat(_this10.user.name, "\n ").concat(offer.sdp));
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this10.user.name, " setLocalDescription: start"));
-                _context8.next = 9;
-                return _this10.pc.setLocalDescription(offer);
-
-              case 9:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this10.user.name, " setLocalDescription: finished"));
-                _this10.callout["class"] = 'callout-success';
-                _this10.callout.icon = 'fa fa-check';
-                _this10.callout.header = 'Initialization Completed..';
-                _this10.callout.body = "".concat(_this10.user.name, " finished creating offer. Now waiting for members to join the broadcast.");
-                _this10.loading = false;
-
-                _this10.sendSignalingMessage(_this10.pc.localDescription, true);
-
-                _context8.next = 25;
-                break;
-
-              case 18:
-                _context8.prev = 18;
-                _context8.t0 = _context8["catch"](1);
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Error creating the offer from ".concat(_this10.user.name, ". Error: ").concat(_context8.t0));
-                _this10.callout["class"] = 'callout-danger';
-                _this10.callout.icon = 'fa fa-ban';
-                _this10.callout.header = 'Initialization Failed!';
-                _this10.callout.body = "Error creating the offer from ".concat(_this10.user.name, ". Error: ").concat(_context8.t0);
-
-              case 25:
-              case "end":
-                return _context8.stop();
-            }
-          }
-        }, _callee8, null, [[1, 18]]);
-      }))();
-    },
-    sendSignalingMessage: function sendSignalingMessage(desc, offer) {
-      var isOffer = offer ? "offer" : "answer";
-      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(this.user.name, " sends the ").concat(isOffer, " through the signal channel")); // send the offer to the other peer
-
-      var details = [];
-      details['type'] = 'signal';
-      details['subtype'] = isOffer;
-      details['content'] = desc;
-      this.sendSignal(details);
-    },
-    onSignalMessage: function onSignalMessage(m) {
-      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])(m.subtype);
-      this.broadcastAvailable = true;
-
-      if (m.subtype === 'offer') {
-        Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])('got remote offer from ' + m.from + ', content ' + m.content);
-        this.onSignalOffer(m.content);
-      } else if (m.subtype === 'answer') {
-        this.onSignalAnswer(m.content);
-      } else if (m.subtype === 'candidate') {
-        Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])('got remote candidate from ' + m.from + ', content ' + m.content);
-        this.onSignalCandidate(m.content);
-      } else if (m.subtype === 'leave') {
-        this.onSignalLeave();
-      } else if (m.subtype === 'close') {
-        this.onSignalClose();
-      } else {
-        console.log('unknown signal type ' + m.subtype);
+    playBroadcast: function playBroadcast() {
+      if (this.broadcastAvailable) {
+        var remoteAudio = document.getElementById("remoteAudio");
+        remoteAudio.play();
       }
     },
-    onSignalOffer: function onSignalOffer(offer) {
-      var _this11 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee9() {
-        var data;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee9$(_context9) {
-          while (1) {
-            switch (_context9.prev = _context9.next) {
-              case 0:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])('onsignal offer');
-                _this11.offer = offer; //alert for members
-
-                _this11.alert["class"] = 'alert-success';
-                _this11.alert.icon = 'fa fa-check';
-                _this11.alert.header = _this11.getSettingsByIndex('site_name') + " Started A Broadcast!";
-                _this11.alert.body = 'Broadcast has started. To listen, join the broadcast by clicking on the play button';
-                data = {
-                  type: _this11.offer.type,
-                  sdp: _this11.offer.sdp += "\n"
-                };
-                _context9.next = 9;
-                return _this11.setRemoteDescription(data);
-
-              case 9:
-                $('#alert-answer').fadeIn(500);
-
-              case 10:
-              case "end":
-                return _context9.stop();
-            }
-          }
-        }, _callee9);
-      }))();
+    pauseBroadcast: function pauseBroadcast() {
+      if (this.broadcastAvailable) {
+        var remoteAudio = document.getElementById("remoteAudio");
+        remoteAudio.pause();
+      }
     },
-    answerBroadcast: function answerBroadcast() {
-      var _this12 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee10() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee10$(_context10) {
-          while (1) {
-            switch (_context10.prev = _context10.next) {
-              case 0:
-                _this12.isBroadcaster = false;
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Requesting ".concat(_this12.user.name, " video stream"));
-                _context10.next = 4;
-                return _this12.getUserVoiceMedia();
-
-              case 4:
-                _context10.next = 6;
-                return _this12.getAudio();
-
-              case 6:
-                _this12.startBroadcast();
-
-              case 7:
-              case "end":
-                return _context10.stop();
-            }
-          }
-        }, _callee10);
-      }))();
-    },
-    onSignalAnswer: function onSignalAnswer(answer) {
-      var _this13 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee11() {
-        var data;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee11$(_context11) {
-          while (1) {
-            switch (_context11.prev = _context11.next) {
-              case 0:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])('onRemoteAnswer : ' + answer);
-                data = {
-                  type: answer.type,
-                  sdp: answer.sdp += "\n"
-                };
-                _context11.next = 4;
-                return _this13.setRemoteDescription(data);
-
-              case 4:
-                _this13.onSetRemoteSuccess(_this13.pc);
-
-              case 5:
-              case "end":
-                return _context11.stop();
-            }
-          }
-        }, _callee11);
-      }))();
-    },
-    onSetRemoteSuccess: function onSetRemoteSuccess(pc) {
-      Toast.fire({
-        type: "success",
-        title: "New user connected!"
-      });
-      this.connectedUsers += 1;
-      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])(pc + ' setRemoteDescription complete');
-    },
-    onSignalCandidate: function onSignalCandidate(candidate) {
-      var _this14 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee12() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee12$(_context12) {
-          while (1) {
-            switch (_context12.prev = _context12.next) {
-              case 0:
-                _context12.prev = 0;
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("".concat(_this14.user.name, " attempting to add a candidate"));
-                _context12.next = 4;
-                return _this14.pc.addIceCandidate(new RTCIceCandidate(candidate));
-
-              case 4:
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Candidate added");
-                _context12.next = 10;
-                break;
-
-              case 7:
-                _context12.prev = 7;
-                _context12.t0 = _context12["catch"](0);
-                Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])("Error adding a candidate in ".concat(_this14.user.name, ". Error: ").concat(_context12.t0));
-
-              case 10:
-              case "end":
-                return _context12.stop();
-            }
-          }
-        }, _callee12, null, [[0, 7]]);
-      }))();
-    },
-    onSignalLeave: function onSignalLeave() {
-      this.connectedUsers -= 1;
-    },
-    onSignalClose: function onSignalClose() {
-      Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])('Ending broadcast');
-      this.leaveBroadcast();
-    },
-    //Video call already going on and member wants to end it
-    endBroadcast: function endBroadcast() {
-      var _this15 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee13() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee13$(_context13) {
-          while (1) {
-            switch (_context13.prev = _context13.next) {
-              case 0:
-                $('#modal-fill').modal('hide');
-                Swal.fire({
-                  title: "Are You Sure?",
-                  type: "info",
-                  showCancelButton: true,
-                  confirmButtonColor: "#3085d6",
-                  cancelButtonColor: "#d33",
-                  confirmButtonText: "Yes Stop Broadcast"
-                }).then(function (result) {
-                  if (result.value) {
-                    var details = [];
-                    details['type'] = 'signal';
-                    details['subtype'] = 'close';
-                    details['content'] = 'ending the broadcast';
-                    Object(_utils_logging__WEBPACK_IMPORTED_MODULE_4__["log"])('Ending broadcast');
-                    _this15.callout["class"] = 'callout-danger';
-                    _this15.callout.icon = 'fa fa-danger';
-                    _this15.callout.header = 'Killing broadcast..';
-                    _this15.callout.body = "".concat(_this15.user.name, " wants to end the broadcast");
-
-                    _this15.sendSignal(details);
-
-                    _this15.pc.close();
-
-                    _this15.pc = null;
-                    _this15.broadcasting = false;
-
-                    _this15.closeMedia();
-
-                    _this15.clearView();
-                  }
-                });
-
-              case 2:
-              case "end":
-                return _context13.stop();
-            }
-          }
-        }, _callee13);
-      }))();
-    },
-    leaveBroadcast: function leaveBroadcast() {
-      //member wants to leave the broadcast
-      this.alert["class"] = 'alert-danger';
-      this.alert.icon = 'fa fa-ban';
-      this.alert.header = "Leaving broadcast..";
-      this.alert.body = "".concat(this.user.name, " has left the broadcast.");
-      var details = [];
-      details['type'] = 'signal';
-      details['subtype'] = 'leave';
-      details['content'] = 'leaving the broadcast';
-      this.sendSignal(details);
-      this.pc.close();
-      this.pc = null;
-      this.broadcasting = false;
-      this.closeMedia();
-      this.clearView();
-    },
-    closeMedia: function closeMedia() {
-      this.localStream.getTracks().forEach(function (track) {
-        track.stop();
-      });
-    },
-    clearView: function clearView() {
-      this.myAudio.srcObject = null;
-      this.remoteAudio.srcObject = null;
-      Toast.fire({
-        type: "success",
-        title: "You left the broadcast!"
-      });
+    stopBroadcast: function stopBroadcast() {
+      if (this.broadcastAvailable) {
+        var remoteAudio = document.getElementById("remoteAudio");
+        remoteAudio.pause();
+        remoteAudio.currentTime = 0;
+      }
     },
     logout: function logout() {
       document.getElementById("logout-form").submit();
@@ -11303,6 +10996,229 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             }
           }
         }, _callee2);
+      }))();
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/broadcasters/Broadcasts.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/pages/broadcasters/Broadcasts.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      user: Laravel.user,
+      loading: false,
+      broadcasts: []
+    };
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return _this.getBroadcasts();
+
+            case 2:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }))();
+  },
+  methods: {
+    getBroadcasts: function getBroadcasts() {
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        var url;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _this2.loading = true;
+                url = "/all-broadcasts";
+                axios.get(url).then(function (response) {
+                  _this2.broadcasts = response.data.broadcasts;
+                  _this2.loading = false;
+                });
+
+              case 3:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    streamBroadcast: function streamBroadcast(broadcast_id) {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        var url;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _this3.loading = true;
+                url = "/stream-broadcast";
+                axios.post(url, {
+                  broadcast_id: broadcast_id
+                }).then(function (response) {
+                  Toast.fire({
+                    type: "success",
+                    title: "Broadcast now streaming!"
+                  });
+                  var broadcast = document.getElementById("broadcast_" + broadcast_id);
+                  broadcast.play();
+                })["catch"](function (error) {
+                  Toast.fire({
+                    type: "error",
+                    title: "Something Went Wrong!"
+                  });
+                });
+
+              case 3:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
+    deleteBroadcast: function deleteBroadcast(broadcast_id) {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                Swal.fire({
+                  title: "Are You Sure?",
+                  type: "info",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Yes Delete Broadcast"
+                }).then(function (result) {
+                  if (result.value) {
+                    _this4.loading = true;
+                    var url = "/delete-broadcast";
+                    axios.post(url, {
+                      broadcast_id: broadcast_id
+                    }).then(function (response) {
+                      _this4.getBroadcasts();
+
+                      Toast.fire({
+                        type: "success",
+                        title: "Successfully deleted broadcast!"
+                      });
+                    })["catch"](function (error) {
+                      Toast.fire({
+                        type: "error",
+                        title: "Something Went Wrong!"
+                      });
+                    });
+                  }
+                });
+
+              case 1:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
       }))();
     }
   }
@@ -19328,7 +19244,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.skin-yellow .sidebar-menu>li:hover>a, .skin-yellow .sidebar-menu>li >a.router-link-exact-active, .skin-yellow .sidebar-menu>li.menu-open>a{\r\n  color: #ffffff;\r\n  background: #303030;\n}\n.skin-yellow .sidebar-menu > li > a.router-link-exact-active,\r\n.skin-yellow .sidebar-menu > li.menu-open > a {\r\n  color: #ffffff;\n}\n.skin-yellow .sidebar-menu > li > a.router-link-exact-active {\r\n  border-left-color: #fbae1c;\n}\r\n", ""]);
+exports.push([module.i, "\n.skin-yellow .sidebar-menu > li:hover > a,\r\n.skin-yellow .sidebar-menu > li > a.router-link-exact-active,\r\n.skin-yellow .sidebar-menu > li.menu-open > a {\r\n  color: #ffffff;\r\n  background: #303030;\n}\n.skin-yellow .sidebar-menu > li > a.router-link-exact-active,\r\n.skin-yellow .sidebar-menu > li.menu-open > a {\r\n  color: #ffffff;\n}\n.skin-yellow .sidebar-menu > li > a.router-link-exact-active {\r\n  border-left-color: #fbae1c;\n}\r\n", ""]);
 
 // exports
 
@@ -68165,15 +68081,6 @@ var render = function() {
                     alt: _vm.getSettingsByIndex("site_name")
                   }
                 })
-              ]),
-              _vm._v(" "),
-              _c("span", { staticClass: "dark-logo" }, [
-                _c("img", {
-                  attrs: {
-                    src: "/storage/site/" + _vm.getSettingsByIndex("logo"),
-                    alt: _vm.getSettingsByIndex("site_name")
-                  }
-                })
               ])
             ]),
             _vm._v(" "),
@@ -68568,6 +68475,24 @@ var render = function() {
                 ? _c("li", [_vm._m(3)])
                 : _vm._e(),
               _vm._v(" "),
+              _vm.$is("Admin") || _vm.$is("Broadcaster")
+                ? _c(
+                    "li",
+                    [
+                      _c(
+                        "router-link",
+                        { attrs: { to: { name: "Broadcasts" } } },
+                        [
+                          _c("i", { staticClass: "icon-volume-2" }),
+                          _vm._v(" "),
+                          _c("span", [_vm._v("Records")])
+                        ]
+                      )
+                    ],
+                    1
+                  )
+                : _vm._e(),
+              _vm._v(" "),
               _vm._m(4),
               _vm._v(" "),
               _vm.$is("Admin") || _vm.$is("Writer")
@@ -68675,12 +68600,16 @@ var render = function() {
                 {
                   staticClass: "alert",
                   class: _vm.alert.class,
-                  attrs: { id: "alert-answer", tyle: "display: none" }
+                  attrs: { id: "alert-answer" }
                 },
                 [
                   _c("h4", [
                     _c("i", { class: "icon " + _vm.alert.icon }),
-                    _vm._v(" " + _vm._s(_vm.alert.header))
+                    _vm._v(
+                      "\n              " +
+                        _vm._s(_vm.alert.header) +
+                        "\n            "
+                    )
                   ]),
                   _vm._v(" "),
                   _c("p", [_vm._v(_vm._s(_vm.alert.body))])
@@ -68692,11 +68621,12 @@ var render = function() {
                   {
                     name: "show",
                     rawName: "v-show",
-                    value: _vm.broadcasting,
-                    expression: "broadcasting"
+                    value: _vm.broadcastAvailable,
+                    expression: "broadcastAvailable"
                   }
                 ],
-                attrs: { id: "remoteAudio", autoplay: "" }
+                staticStyle: { display: "none" },
+                attrs: { id: "remoteAudio", controls: "" }
               })
             ]),
             _vm._v(" "),
@@ -68708,7 +68638,7 @@ var render = function() {
                   attrs: { type: "button", disabled: !_vm.broadcastAvailable },
                   on: {
                     click: function($event) {
-                      return _vm.answerBroadcast()
+                      return _vm.playBroadcast()
                     }
                   }
                 },
@@ -68722,7 +68652,12 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-app bg-purple",
-                  attrs: { type: "button", disabled: !_vm.broadcastAvailable }
+                  attrs: { type: "button", disabled: !_vm.broadcastAvailable },
+                  on: {
+                    click: function($event) {
+                      return _vm.pauseBroadcast()
+                    }
+                  }
                 },
                 [
                   _c("i", { staticClass: "fa fa-pause" }),
@@ -68737,7 +68672,7 @@ var render = function() {
                   attrs: { type: "button", disabled: !_vm.broadcastAvailable },
                   on: {
                     click: function($event) {
-                      return _vm.leaveBroadcast()
+                      return _vm.stopBroadcast()
                     }
                   }
                 },
@@ -68772,7 +68707,7 @@ var render = function() {
             _c("div", { staticClass: "modal-body" }, [
               _c("p", [
                 _vm._v(
-                  "Create a live audio broadcast and stream it to all premium members in real time"
+                  "Record an audio broadcast and stream it live to all premium members in real time"
                 )
               ]),
               _vm._v(" "),
@@ -68791,20 +68726,21 @@ var render = function() {
                 [
                   _c("h4", [
                     _c("i", { class: "icon " + _vm.callout.icon }),
-                    _vm._v(" " + _vm._s(_vm.callout.header))
-                  ]),
-                  _vm._v(" "),
-                  _c("h5", { staticClass: "text-right" }, [
-                    _vm._v("Connected users: "),
-                    _c("span", { staticClass: "badge badge-info" }, [
-                      _vm._v(" " + _vm._s(_vm.connectedUsers))
-                    ])
+                    _vm._v(
+                      "\n              " +
+                        _vm._s(_vm.callout.header) +
+                        "\n            "
+                    )
                   ]),
                   _vm._v(" "),
                   _c(
                     "p",
                     [
-                      _vm._v(_vm._s(_vm.callout.body) + " "),
+                      _vm._v(
+                        "\n              " +
+                          _vm._s(_vm.callout.body) +
+                          "\n              "
+                      ),
                       _vm.loading
                         ? _c("rotate-square5", {
                             staticClass: "video__spinner"
@@ -68816,22 +68752,19 @@ var render = function() {
                 ]
               ),
               _vm._v(" "),
-              _c("audio", {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.broadcasting,
-                    expression: "broadcasting"
-                  }
-                ],
-                attrs: {
-                  id: "localAudio",
-                  autoplay: "",
-                  controls: "",
-                  muted: ""
-                }
-              }),
+              _c("div", { attrs: { id: "recording-container" } }, [
+                _c("audio", {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.recorded,
+                      expression: "recorded"
+                    }
+                  ],
+                  attrs: { id: "adioPlay", autoplay: "", controls: "" }
+                })
+              ]),
               _vm._v(" "),
               _c("br")
             ]),
@@ -68840,38 +68773,76 @@ var render = function() {
               _c(
                 "button",
                 {
-                  staticClass: "btn btn-app bg-green",
-                  attrs: { type: "button" },
+                  staticClass: "btn btn-app bg-red col-md-4",
+                  attrs: { type: "button", disabled: _vm.recording },
                   on: {
                     click: function($event) {
-                      return _vm.requestBroadcast()
+                      return _vm.recordBroadcast()
                     }
                   }
                 },
                 [
                   _c("i", { staticClass: "fa fa-microphone" }),
-                  _vm._v(" Start\n          ")
+                  _vm._v(
+                    "\n            " + _vm._s(_vm.recordMsg) + "\n          "
+                  )
                 ]
               ),
-              _vm._v(" "),
-              _vm._m(7),
-              _vm._v(" "),
-              _vm._m(8),
               _vm._v(" "),
               _c(
                 "button",
                 {
-                  staticClass: "btn btn-app bg-teal",
-                  attrs: { type: "button" },
+                  staticClass: "btn btn-app bg-yellow col-md-4",
+                  attrs: { type: "button", disabled: !_vm.recording },
                   on: {
                     click: function($event) {
-                      return _vm.endBroadcast()
+                      return _vm.stopRecording()
                     }
                   }
                 },
                 [
                   _c("i", { staticClass: "fa fa-stop" }),
                   _vm._v(" Stop\n          ")
+                ]
+              ),
+              _vm._v(" "),
+              _vm.recorded && !_vm.recording
+                ? _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-app bg-green col-md-12 mt-5",
+                      attrs: { type: "button" },
+                      on: {
+                        click: function($event) {
+                          return _vm.saveRecording()
+                        }
+                      }
+                    },
+                    [
+                      _c("i", { staticClass: "fa fa-upload" }),
+                      _vm._v(" Upload\n          ")
+                    ]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.uploading,
+                      expression: "uploading"
+                    }
+                  ],
+                  staticClass: "progress-bar col-md-12 mt-2"
+                },
+                [
+                  _c("progress", {
+                    attrs: { max: "100" },
+                    domProps: { value: _vm.uploadPercentage }
+                  })
                 ]
               )
             ])
@@ -69001,7 +68972,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "modal-header" }, [
-      _c("h3", { staticClass: "modal-title" }, [_vm._v("Start A Broadcast")]),
+      _c("h3", { staticClass: "modal-title" }, [_vm._v("Record A Broadcast")]),
       _vm._v(" "),
       _c(
         "button",
@@ -69012,26 +68983,6 @@ var staticRenderFns = [
         [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
       )
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      { staticClass: "btn btn-app bg-yellow", attrs: { type: "button" } },
-      [_c("i", { staticClass: "fa fa-play" }), _vm._v(" Play\n          ")]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      { staticClass: "btn btn-app bg-purple", attrs: { type: "button" } },
-      [_c("i", { staticClass: "fa fa-pause" }), _vm._v(" Pause\n          ")]
-    )
   }
 ]
 render._withStripped = true
@@ -74180,6 +74131,182 @@ var staticRenderFns = [
     ])
   }
 ]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/broadcasters/Broadcasts.vue?vue&type=template&id=7bde3b36&":
+/*!********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/pages/broadcasters/Broadcasts.vue?vue&type=template&id=7bde3b36& ***!
+  \********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "content-wrapper", staticStyle: { "min-height": "644px" } },
+    [
+      _c("section", { staticClass: "content-header" }, [
+        _c("h1", [_vm._v("Broadcasts")]),
+        _vm._v(" "),
+        _c("ol", { staticClass: "breadcrumb" }, [
+          _c(
+            "li",
+            { staticClass: "breadcrumb-item" },
+            [
+              _c("router-link", { attrs: { to: { name: "Home" } } }, [
+                _c("i", { staticClass: "fa fa-dashboard" }),
+                _vm._v(" Dashboard\n        ")
+              ])
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("li", { staticClass: "breadcrumb-item active" }, [
+            _vm._v("Broadcasts")
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("section", { staticClass: "content" }, [
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-lg-12 col-12" }, [
+            _c("div", { staticClass: "box" }, [
+              _c("div", { staticClass: "box-header with-border" }, [
+                _c("h5", { staticClass: "box-title" }, [
+                  _vm._v(
+                    "All Broadcasts (" + _vm._s(_vm.broadcasts.length) + ")"
+                  )
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "box-body p-0" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "media-list media-list-hover media-list-divided"
+                  },
+                  _vm._l(_vm.broadcasts, function(broadcast) {
+                    return _c(
+                      "div",
+                      { key: broadcast.id, staticClass: "media" },
+                      [
+                        _c("img", {
+                          staticClass: "avatar",
+                          attrs: {
+                            src: broadcast.user.avatar_url,
+                            alt: broadcast.user.name
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "media-body" }, [
+                          _c(
+                            "p",
+                            [
+                              _c("strong", [
+                                _vm._v(_vm._s(broadcast.user.name))
+                              ]),
+                              _vm._v(" "),
+                              _c("timeago", {
+                                staticClass: "float-right",
+                                attrs: {
+                                  datetime: broadcast.created_at,
+                                  "auto-update": 60
+                                }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c("audio", {
+                            attrs: {
+                              src: broadcast.source_url,
+                              controls: "",
+                              id: "broadcast_" + broadcast.id
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "media-block-actions" }, [
+                            _c(
+                              "nav",
+                              {
+                                staticClass: "nav nav-dot-separated no-gutters"
+                              },
+                              [
+                                _c("div", { staticClass: "nav-item" }, [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn bg-green",
+                                      attrs: { type: "button" },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.streamBroadcast(
+                                            broadcast.id
+                                          )
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c("i", { staticClass: "fa fa-play" }),
+                                      _vm._v(
+                                        " Stream\n                        "
+                                      )
+                                    ]
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "nav-item" }, [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn bg-red",
+                                      attrs: { type: "button" },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.deleteBroadcast(
+                                            broadcast.id
+                                          )
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c("i", { staticClass: "fa fa-times" }),
+                                      _vm._v(
+                                        " Delete\n                        "
+                                      )
+                                    ]
+                                  )
+                                ])
+                              ]
+                            )
+                          ])
+                        ])
+                      ]
+                    )
+                  }),
+                  0
+                )
+              ])
+            ])
+          ])
+        ])
+      ])
+    ]
+  )
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -98984,6 +99111,23 @@ _router_js__WEBPACK_IMPORTED_MODULE_10__["default"].beforeEach(function (to, fro
 });
 _router_js__WEBPACK_IMPORTED_MODULE_10__["default"].beforeEach(function (to, from, next) {
   if (to.matched.some(function (record) {
+    return record.meta.requiresBroadcasterAccess;
+  })) {
+    if (Vue.prototype.$is('Admin') || Vue.prototype.$is('Broadcaster')) {
+      next();
+    } else {
+      Toast.fire({
+        type: "error",
+        title: "Access Restricted to Broadcasters Only!"
+      });
+      _router_js__WEBPACK_IMPORTED_MODULE_10__["default"].push("Forbidden");
+    }
+  } else {
+    next();
+  }
+});
+_router_js__WEBPACK_IMPORTED_MODULE_10__["default"].beforeEach(function (to, from, next) {
+  if (to.matched.some(function (record) {
     return record.meta.requiresWriterAccess;
   })) {
     if (Vue.prototype.$is('Admin') || Vue.prototype.$is('Writer')) {
@@ -100206,6 +100350,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/pages/broadcasters/Broadcasts.vue":
+/*!*******************************************************************!*\
+  !*** ./resources/js/components/pages/broadcasters/Broadcasts.vue ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Broadcasts_vue_vue_type_template_id_7bde3b36___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Broadcasts.vue?vue&type=template&id=7bde3b36& */ "./resources/js/components/pages/broadcasters/Broadcasts.vue?vue&type=template&id=7bde3b36&");
+/* harmony import */ var _Broadcasts_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Broadcasts.vue?vue&type=script&lang=js& */ "./resources/js/components/pages/broadcasters/Broadcasts.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Broadcasts_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Broadcasts_vue_vue_type_template_id_7bde3b36___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Broadcasts_vue_vue_type_template_id_7bde3b36___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/pages/broadcasters/Broadcasts.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/pages/broadcasters/Broadcasts.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/pages/broadcasters/Broadcasts.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Broadcasts_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Broadcasts.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/broadcasters/Broadcasts.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Broadcasts_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/pages/broadcasters/Broadcasts.vue?vue&type=template&id=7bde3b36&":
+/*!**************************************************************************************************!*\
+  !*** ./resources/js/components/pages/broadcasters/Broadcasts.vue?vue&type=template&id=7bde3b36& ***!
+  \**************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Broadcasts_vue_vue_type_template_id_7bde3b36___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Broadcasts.vue?vue&type=template&id=7bde3b36& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/broadcasters/Broadcasts.vue?vue&type=template&id=7bde3b36&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Broadcasts_vue_vue_type_template_id_7bde3b36___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Broadcasts_vue_vue_type_template_id_7bde3b36___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/pages/chat/Chat.vue":
 /*!*****************************************************!*\
   !*** ./resources/js/components/pages/chat/Chat.vue ***!
@@ -101052,58 +101265,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/utils/ICEServers.js":
-/*!*****************************************************!*\
-  !*** ./resources/js/components/utils/ICEServers.js ***!
-  \*****************************************************/
-/*! exports provided: servers */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "servers", function() { return servers; });
-var servers = {
-  iceServers: [{
-    urls: "stun:stun.l.google.com:19302"
-  } // { url: "stun:stun01.sipphone.com" },
-  // { url: "stun:stun.ekiga.net" },
-  // { url: "stun:stun.fwdnet.net" },
-  // { url: "stun:stun.ideasip.com" },
-  // { url: "stun:stun.iptel.org" },
-  // { url: "stun:stun.rixtelecom.se" },
-  // { url: "stun:stun.schlund.de" },
-  // { url: "stun:stun.l.google.com:19302" },
-  // { url: "stun:stun1.l.google.com:19302" },
-  // { url: "stun:stun2.l.google.com:19302" },
-  // { url: "stun:stun3.l.google.com:19302" },
-  // { url: "stun:stun4.l.google.com:19302" },
-  // { url: "stun:stunserver.org" },
-  // { url: "stun:stun.softjoys.com" },
-  // { url: "stun:stun.voiparound.com" },
-  // { url: "stun:stun.voipbuster.com" },
-  // { url: "stun:stun.voipstunt.com" },
-  // { url: "stun:stun.voxgratia.org" },
-  // { url: "stun:stun.xten.com" },
-  // {
-  //     url: "turn:numb.viagenie.ca",
-  //     credential: "muazkh",
-  //     username: "webrtc@live.com"
-  // },
-  // {
-  //     url: "turn:192.158.29.39:3478?transport=udp",
-  //     credential: "JZEOEt2V3Qb0y27GRntt2u2PAYA=",
-  //     username: "28224511:1379330808"
-  // },
-  // {
-  //     url: "turn:192.158.29.39:3478?transport=tcp",
-  //     credential: "JZEOEt2V3Qb0y27GRntt2u2PAYA=",
-  //     username: "28224511:1379330808"
-  // }
-  ]
-};
-
-/***/ }),
-
 /***/ "./resources/js/components/utils/logging.js":
 /*!**************************************************!*\
   !*** ./resources/js/components/utils/logging.js ***!
@@ -101144,13 +101305,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_pages_chat_Conversations__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./components/pages/chat/Conversations */ "./resources/js/components/pages/chat/Conversations.vue");
 /* harmony import */ var _components_pages_writers_Write__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./components/pages/writers/Write */ "./resources/js/components/pages/writers/Write.vue");
 /* harmony import */ var _components_pages_writers_MyPosts__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./components/pages/writers/MyPosts */ "./resources/js/components/pages/writers/MyPosts.vue");
-/* harmony import */ var _components_pages_Members__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./components/pages/Members */ "./resources/js/components/pages/Members.vue");
-/* harmony import */ var _components_pages_Users__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./components/pages/Users */ "./resources/js/components/pages/Users.vue");
-/* harmony import */ var _components_pages_Profile__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./components/pages/Profile */ "./resources/js/components/pages/Profile.vue");
-/* harmony import */ var _components_pages_ChatRoom__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./components/pages/ChatRoom */ "./resources/js/components/pages/ChatRoom.vue");
-/* harmony import */ var _components_pages_Settings__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./components/pages/Settings */ "./resources/js/components/pages/Settings.vue");
-/* harmony import */ var _components_pages_NotFound__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./components/pages/NotFound */ "./resources/js/components/pages/NotFound.vue");
-/* harmony import */ var _components_pages_Forbidden__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./components/pages/Forbidden */ "./resources/js/components/pages/Forbidden.vue");
+/* harmony import */ var _components_pages_broadcasters_Broadcasts__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./components/pages/broadcasters/Broadcasts */ "./resources/js/components/pages/broadcasters/Broadcasts.vue");
+/* harmony import */ var _components_pages_Members__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./components/pages/Members */ "./resources/js/components/pages/Members.vue");
+/* harmony import */ var _components_pages_Users__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./components/pages/Users */ "./resources/js/components/pages/Users.vue");
+/* harmony import */ var _components_pages_Profile__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./components/pages/Profile */ "./resources/js/components/pages/Profile.vue");
+/* harmony import */ var _components_pages_ChatRoom__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./components/pages/ChatRoom */ "./resources/js/components/pages/ChatRoom.vue");
+/* harmony import */ var _components_pages_Settings__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./components/pages/Settings */ "./resources/js/components/pages/Settings.vue");
+/* harmony import */ var _components_pages_NotFound__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./components/pages/NotFound */ "./resources/js/components/pages/NotFound.vue");
+/* harmony import */ var _components_pages_Forbidden__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./components/pages/Forbidden */ "./resources/js/components/pages/Forbidden.vue");
 
  //Navigation Start
 
@@ -101166,6 +101328,8 @@ __webpack_require__.r(__webpack_exports__);
 
  //Writers
 
+
+ //Broadcasters
 
 
 
@@ -101204,18 +101368,18 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   }, {
     path: "/dashboard/members",
     name: "Members",
-    component: _components_pages_Members__WEBPACK_IMPORTED_MODULE_13__["default"]
+    component: _components_pages_Members__WEBPACK_IMPORTED_MODULE_14__["default"]
   }, {
     path: "/dashboard/users",
     name: "Users",
-    component: _components_pages_Users__WEBPACK_IMPORTED_MODULE_14__["default"],
+    component: _components_pages_Users__WEBPACK_IMPORTED_MODULE_15__["default"],
     meta: {
       requiresAdminAccess: true
     }
   }, {
     path: "/dashboard/profile/:slug",
     name: "Profile",
-    component: _components_pages_Profile__WEBPACK_IMPORTED_MODULE_15__["default"]
+    component: _components_pages_Profile__WEBPACK_IMPORTED_MODULE_16__["default"]
   }, {
     path: "/dashboard/write",
     name: "Write",
@@ -101229,6 +101393,13 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
     component: _components_pages_writers_MyPosts__WEBPACK_IMPORTED_MODULE_12__["default"],
     meta: {
       requiresWriterAccess: true
+    }
+  }, {
+    path: "/dashboard/broadcasts",
+    name: "Broadcasts",
+    component: _components_pages_broadcasters_Broadcasts__WEBPACK_IMPORTED_MODULE_13__["default"],
+    meta: {
+      requiresBroadcasterAccess: true
     }
   }, {
     path: "/dashboard/pricing",
@@ -101249,22 +101420,22 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   }, {
     path: "/dashboard/chatroom",
     name: "ChatRoom",
-    component: _components_pages_ChatRoom__WEBPACK_IMPORTED_MODULE_16__["default"]
+    component: _components_pages_ChatRoom__WEBPACK_IMPORTED_MODULE_17__["default"]
   }, {
     path: "/dashboard/settings",
     name: "Settings",
-    component: _components_pages_Settings__WEBPACK_IMPORTED_MODULE_17__["default"],
+    component: _components_pages_Settings__WEBPACK_IMPORTED_MODULE_18__["default"],
     meta: {
       requiresAdminAccess: true
     }
   }, {
     path: "/forbidden",
     name: "Forbidden",
-    component: _components_pages_Forbidden__WEBPACK_IMPORTED_MODULE_19__["default"]
+    component: _components_pages_Forbidden__WEBPACK_IMPORTED_MODULE_20__["default"]
   }, {
     path: "/404",
     name: "404",
-    component: _components_pages_NotFound__WEBPACK_IMPORTED_MODULE_18__["default"]
+    component: _components_pages_NotFound__WEBPACK_IMPORTED_MODULE_19__["default"]
   }, {
     path: "*",
     redirect: "/404"

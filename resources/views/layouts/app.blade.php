@@ -157,7 +157,7 @@
     
     <!-- Vticker -->
     <script src="{{ asset('assets/js/vticker.js') }}"></script>
-    
+
     <!-- webticker -->
     <script src="{{ asset('assets/vendor_components/Web-Ticker-master/jquery.webticker.min.js') }}"></script>
     <script>

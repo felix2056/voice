@@ -123,6 +123,23 @@ router.beforeEach((to, from, next) => {
 });
 
 router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.requiresBroadcasterAccess)) {
+        if (Vue.prototype.$is('Admin') || Vue.prototype.$is('Broadcaster')) {
+            next();
+        } else{
+            Toast.fire({
+                type: "error",
+                title: "Access Restricted to Broadcasters Only!"
+            });
+            
+            router.push("Forbidden")
+        }
+    } else {
+        next();
+    }
+});
+
+router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresWriterAccess)) {
         if (Vue.prototype.$is('Admin') || Vue.prototype.$is('Writer')) {
             next();

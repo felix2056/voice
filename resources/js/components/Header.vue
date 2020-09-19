@@ -9,12 +9,12 @@
               :alt="getSettingsByIndex('site_name')"
             />
           </span>
-          <span class="dark-logo">
+          <!-- <span class="dark-logo">
             <img
               :src="'/storage/site/' + getSettingsByIndex('logo')"
               :alt="getSettingsByIndex('site_name')"
             />
-          </span>
+          </span> -->
         </b>
 
         <!-- logo for regular state and mobile devices -->
@@ -231,14 +231,14 @@
                 <router-link :to="{ name: 'Compose' }">Compose</router-link>
               </li>
             </ul>
-          </li> -->
+          </li>-->
 
           <!-- <li>
             <router-link :to="{ name: 'ChatRoom' }">
               <i class="icon-envelope"></i>
               <span>Chat</span>
             </router-link>
-          </li> -->
+          </li>-->
 
           <li>
             <router-link :to="{ name: 'Billing' }">
@@ -261,6 +261,13 @@
               <i class="icon-microphone"></i>
               <span>Broadcast</span>
             </a>
+          </li>
+
+          <li v-if="$is('Admin') || $is('Broadcaster')">
+            <router-link :to="{ name: 'Broadcasts' }">
+              <i class="icon-volume-2"></i>
+              <span>Records</span>
+            </router-link>
           </li>
 
           <li>
@@ -328,23 +335,41 @@
           <div class="modal-body">
             <p>Listen to a live broadcast</p>
 
-            <div class="alert" id="alert-answer" :class="alert.class" tyle="display: none">        
-              <h4><i :class="'icon ' + alert.icon"></i> {{ alert.header }}</h4>
+            <div class="alert" id="alert-answer" :class="alert.class">
+              <h4>
+                <i :class="'icon ' + alert.icon"></i>
+                {{ alert.header }}
+              </h4>
               <p>{{ alert.body }}</p>
             </div>
 
-            <audio v-show="broadcasting" id="remoteAudio" autoplay></audio>
+            <audio v-show="broadcastAvailable" id="remoteAudio" controls style="display: none"></audio>
           </div>
           <div class="modal-footer">
-            <button type="button" @click="answerBroadcast()" :disabled="!broadcastAvailable" class="btn btn-app bg-yellow">
+            <button
+              type="button"
+              @click="playBroadcast()"
+              :disabled="!broadcastAvailable"
+              class="btn btn-app bg-yellow"
+            >
               <i class="fa fa-play"></i> Play
             </button>
 
-            <button type="button" :disabled="!broadcastAvailable" class="btn btn-app bg-purple">
+            <button
+              type="button"
+              @click="pauseBroadcast()"
+              :disabled="!broadcastAvailable"
+              class="btn btn-app bg-purple"
+            >
               <i class="fa fa-pause"></i> Pause
             </button>
 
-            <button type="button" @click="leaveBroadcast()" :disabled="!broadcastAvailable" class="btn btn-app bg-teal">
+            <button
+              type="button"
+              @click="stopBroadcast()"
+              :disabled="!broadcastAvailable"
+              class="btn btn-app bg-teal"
+            >
               <i class="fa fa-stop"></i> Stop
             </button>
           </div>
@@ -363,46 +388,82 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h3 class="modal-title">Start A Broadcast</h3>
+            <h3 class="modal-title">Record A Broadcast</h3>
             <button type="button" class="close" data-dismiss="modal">
               <span aria-hidden="true">×</span>
             </button>
           </div>
           <div class="modal-body">
-            <p>Create a live audio broadcast and stream it to all premium members in real time</p>
+            <p>Record an audio broadcast and stream it live to all premium members in real time</p>
             <br />
             <br />
-            
-            <div class="callout" id="callout" :class="callout.class" style="display: none">
-              <h4><i :class="'icon ' + callout.icon"></i> {{ callout.header }}</h4>
-              <h5 class="text-right">Connected users: <span class="badge badge-info"> {{ connectedUsers  }}</span></h5>
 
-              <p>{{ callout.body }} <rotate-square5 v-if="loading" class="video__spinner"></rotate-square5></p>
+            <div class="callout" id="callout" :class="callout.class" style="display: none">
+              <h4>
+                <i :class="'icon ' + callout.icon"></i>
+                {{ callout.header }}
+              </h4>
+              <!-- <h5 class="text-right">
+                Connected users:
+                <span class="badge badge-info">{{ connectedUsers }}</span>
+              </h5>-->
+
+              <p>
+                {{ callout.body }}
+                <rotate-square5 v-if="loading" class="video__spinner"></rotate-square5>
+              </p>
             </div>
 
-             <audio v-show="broadcasting" id="localAudio" autoplay controls muted></audio>
+            <div id="recording-container">
+              <!-- container to house the recorded broadcast -->
+              <!--for play the audio-->
+              <audio v-show="recorded" id="adioPlay" autoplay controls></audio>
+            </div>
+
             <br />
           </div>
           <div class="modal-footer">
             <!-- <button type="button" class="btn btn-bold btn-pure btn-secondary" data-dismiss="modal">Close</button> -->
 
-            <button type="button" @click="requestBroadcast()" class="btn btn-app bg-green">
-              <i class="fa fa-microphone"></i> Start
+            <button
+              type="button"
+              @click="recordBroadcast()"
+              :disabled="recording"
+              class="btn btn-app bg-red col-md-4"
+            >
+              <i class="fa fa-microphone"></i>
+              {{ recordMsg }}
             </button>
 
-            <button type="button" class="btn btn-app bg-yellow">
+            <!-- <button type="button" class="btn btn-app bg-yellow">
               <i class="fa fa-play"></i> Play
             </button>
 
             <button type="button" class="btn btn-app bg-purple">
               <i class="fa fa-pause"></i> Pause
-            </button>
+            </button>-->
 
-            <button type="button" @click="endBroadcast()" class="btn btn-app bg-teal">
+            <button
+              type="button"
+              @click="stopRecording()"
+              :disabled="!recording"
+              class="btn btn-app bg-yellow col-md-4"
+            >
               <i class="fa fa-stop"></i> Stop
             </button>
 
-            <!-- <button type="button" class="btn btn-bold btn-pure btn-primary float-right">Save changes</button> -->
+            <button
+              v-if="recorded && !recording"
+              @click="saveRecording()"
+              type="button"
+              class="btn btn-app bg-green col-md-12 mt-5"
+            >
+              <i class="fa fa-upload"></i> Upload
+            </button>
+
+            <div v-show="uploading" class="progress-bar col-md-12 mt-2">
+              <progress max="100" :value.prop="uploadPercentage"></progress>
+            </div>
           </div>
         </div>
       </div>
@@ -413,7 +474,6 @@
 <script>
 import MiniChatroom from "./MiniChatroom";
 import { RotateSquare5 } from "vue-loading-spinner";
-import { servers } from './utils/ICEServers';
 import { log } from "./utils/logging";
 
 import notifications from "./Notifications";
@@ -424,7 +484,7 @@ export default {
   components: {
     MiniChatroom,
     RotateSquare5,
-    notifications
+    notifications,
   },
 
   data() {
@@ -432,47 +492,31 @@ export default {
       user: Laravel.user,
       csrf_token: Laravel.csrfToken,
 
-      broadcasting: false,
-      isBroadcaster: false,
-
-      //disables the play button for users if no broadcast is available
+      //Stream for viewers and listeners
       broadcastAvailable: false,
 
-      //audio
-      myAudio: {},
+      recording: false,
+      recorded: false,
 
-      //offer received from person who requested video call
-      offer: null,
-
-      // Media config Voice Call
       broadcastConstraints: {
         audio: {
           echoCancellation: true,
-          noiseSuppression: true, 
-          autoGainControl: false
+          noiseSuppression: true,
+          autoGainControl: false,
         },
-        video: false
       },
 
-      // local & remote video stream
-      localStream: undefined,
-      remoteStream: undefined,
-      
-      // STUN ice servers
-      configuration: servers,
+      //recording
+      rec: {},
+      recordedBroadcast: null,
+      audioChunks: [],
 
-      // Peer connection
-      pc: undefined,
-      
-      // Offer config
-      offerOptions: {
-        offerToReceiveAudio: 1,
-        offerToReceiveVideo: 1
-      },
-
-      connectedUsers: 0,
+      //audio
+      audio: {},
 
       loading: false,
+      uploading: false,
+      uploadPercentage: 0,
 
       callout: {
         class: "",
@@ -486,472 +530,310 @@ export default {
         icon: "",
         header: "",
         body: "",
-      }
+      },
     };
   },
 
   computed: {
-    ...mapGetters(["getSettingsByIndex"])
+    ...mapGetters(["getSettingsByIndex"]),
+
+    recordMsg() {
+      if (this.recording && !this.recorded) {
+        return "Recording...";
+      } else if (this.recorded && !this.recording) {
+        return "Record Again";
+      } else {
+        return "Record";
+      }
+    },
   },
 
-  async mounted() {
-    await this.initializeBroadcast();
+  mounted() {
+    this.initailize();
   },
 
   methods: {
-    async initializeBroadcast() {
-      log(
-          `${this.user.name} initializing and setting up in case of broadcast`
-        );
+    async initailize() {
+      let self = this;
+      Echo.private("broadcast").listen("NewBroadcast", (data) => {
+        let remoteAudio = document.getElementById("remoteAudio");
+        remoteAudio.src = data.source;
+        
 
-        Echo.private("broadcast").listen(
-          "NewBroadcast",
-          data => {
-            if (data.type === "signal") {
-              this.onSignalMessage(data);
-            } else {
-              console.log("received unknown message type");
-            }
-          }
-        );
+        self.broadcastAvailable = true;
 
-        // Set the audio and audio element in case there would be need for them
-        this.myAudio = document.getElementById("localAudio");
-        this.remoteAudio = document.getElementById('remoteAudio');
-
-        log(this.myAudio)
-
-        // Create peer connection
-        this.createPeerConnection();
-
-        // Event listeners
-        this.onIceCandidates();
-        this.onAddStream();  
+        //alert for members
+        self.alert.class = "alert-success";
+        self.alert.icon = "fa fa-success";
+        self.alert.header = `Broadcast Available..`;
+        self.alert.body = "Play the broadcast";
+      });
     },
-    
-    async requestBroadcast() {
-      if (this.broadcasting) {
+
+    async recordBroadcast() {
+      if (this.recording) {
         return;
       }
 
       this.loading = true;
+      this.recording = true;
 
-      log(`${this.user.name} wants to start a broadcast`);
-      this.callout.class = 'callout-info';
-      this.callout.icon = 'fa fa-info';
-      this.callout.header = 'Initailizing broadcast..';
-      this.callout.body = `${this.user.name} wants to start a broadcast`;
+      //Default everything back
+      this.recorded = false;
 
-      this.isBroadcaster = true;
+      this.rec = {};
+      this.recordedBroadcast = {};
+      this.audioChunks = [];
+      this.audio = {};
 
-      $('#callout').fadeIn(500);
+      log(`${this.user.name} wants to record a broadcast`);
+      this.callout.class = "callout-info";
+      this.callout.icon = "fa fa-info";
+      this.callout.header = "Initailizing broadcast recorder..";
+      this.callout.body = `${this.user.name} wants to record a broadcast`;
+
+      $("#callout").fadeIn(500);
 
       await this.getUserVoiceMedia();
-      await this.getAudio();
-
-      this.startBroadcast();
+      //await this.getAudio();
     },
 
     async getUserVoiceMedia() {
+      let self = this;
+
       log(`Requesting ${this.user.name} voice stream`);
       this.callout.body = `Requesting ${this.user.name} voice stream`;
       this.alert.body = `Requesting ${this.user.name} voice stream`;
 
       if ("mediaDevices" in navigator) {
+        //callout for admin
+        this.callout.class = "callout-warning";
+        this.callout.icon = "fa fa-warning";
+        this.callout.header = `Preparing Media Devices`;
+        this.callout.body = "Getting user permission for voice media";
+
         try {
-          const stream = await navigator.mediaDevices.getUserMedia(this.broadcastConstraints)
-            || navigator.mediaDevices.webkitGetUserMedia(this.broadcastConstraints)
-            || navigator.mediaDevices.mozGetUserMedia(this.broadcastConstraints);
+          const stream =
+            (await navigator.mediaDevices.getUserMedia(
+              this.broadcastConstraints
+            )) ||
+            navigator.mediaDevices.webkitGetUserMedia(
+              this.broadcastConstraints
+            ) ||
+            navigator.mediaDevices.mozGetUserMedia(this.broadcastConstraints);
 
-          this.myAudio.srcObject = stream;
-          this.localStream = stream;
-          
-          log("Received local voice stream");
-          //callout for admin
-          this.callout.class = 'callout-warning';
-          this.callout.icon = 'fa fa-warning';
-          this.callout.header = `Receiving broadcast..`;
-          this.callout.body = 'Getting user voice media';
+          this.rec = new MediaRecorder(stream);
 
-          //alert for members
-          this.alert.class = 'alert-warning';
-          this.alert.icon = 'fa fa-warning';
-          this.alert.header = `Receiving broadcast..`;
-          this.alert.body = 'Getting user voice media';
+          let container = document.getElementById("recording-container");
+
+          // 2nd audio tag for play the audio
+          let playAudio = document.getElementById("adioPlay");
+
+          this.audio = document.createElement("audio");
+
+          // callout for admin
+          this.callout.class = "callout-warning";
+          this.callout.icon = "fa fa-warning";
+          this.callout.header = `Stream Received!`;
+          this.callout.body = "Starting voice recording";
+
+          log("Starting voice recording");
+
+          if ("srcObject" in this.audio) {
+            this.audio.srcObject = stream;
+          } else {
+            this.audio.src = window.URL.createObjectURL(stream);
+          }
+
+          container.append(this.audio);
+
+          this.audio.onloadedmetadata = function (ev) {
+            self.audio.play();
+          };
+
+          this.rec.ondataavailable = function (ev) {
+            self.audioChunks.push(ev.data);
+          };
+
+          // Convert the audio data in to blob
+          // after stopping the recording
+          this.rec.onstop = function (ev) {
+            log("Stopping broadcast");
+
+            self.callout.class = "callout-warning";
+            self.callout.icon = "fa fa-danger";
+            self.callout.header = "Preparing Recorded Audio";
+            self.callout.body = `getting audio blob ready to send to the server!`;
+
+            // blob of type mp3
+            self.recordedBroadcast = new Blob(self.audioChunks, {
+              type: "audio/mp3;",
+            });
+
+            // After fill up the chunk
+            // array make it empty
+            self.audioChunks = [];
+
+            // Creating audio url with reference
+            // of created blob named 'audioData'
+            let audioSrc = window.URL.createObjectURL(self.recordedBroadcast);
+
+            // Pass the audio url to the 2nd video tag and default the original audio
+            playAudio.src = audioSrc;
+
+            if ("srcObject" in self.audio) {
+              self.audio.srcObject = null;
+            } else {
+              self.audio.src = null;
+            }
+
+            //Audio prepared and ready to upload to server
+            self.callout.class = "callout-success";
+            self.callout.icon = "fa fa-success";
+            self.callout.header = "Recording Complete";
+            self.callout.body = `You can now proceed to upload to server or record a new audio!`;
+
+            self.recording = false;
+            self.recorded = true;
+          };
+
+          //start
+          this.startRecording();
         } catch (error) {
           this.loading = false;
+          this.recording = false;
 
           log(`getUserMedia error: ${error}`);
           //callout for admin
-          this.callout.class = 'callout-danger';
-          this.callout.icon = 'fa fa-ban';
-          this.callout.header = 'Failed to start broadcast..';
-          this.callout.body = `You need to give permission to use your microphone. GetUserMedia error: ${error}`;
-
-          //alert for members
-          this.alert.class = 'alert-danger';
-          this.alert.icon = 'fa fa-ban';
-          this.alert.header = 'Failed to start broadcast..';
-          this.alert.body = `You need to give permission to use your microphone. GetUserMedia error: ${error}`;
+          this.callout.class = "callout-danger";
+          this.callout.icon = "fa fa-ban";
+          this.callout.header = "Failed to initiate broadcast recording..";
+          this.callout.body = `Make sure you give permission to use your microphone. GetUserMedia error: ${error}`;
         }
       }
     },
 
-    getAudio() {
-      const audio = this.localStream.getAudioTracks();
-      if (audio.length > 0) {
-        log(`Using audio device: ${audio[0].label}`);
+    startRecording() {
+      this.rec.start();
+      this.recording = true;
 
-        //callout for admin
-        this.callout.class = 'callout-warning';
-        this.callout.icon = 'fa fa-warning';
-        this.callout.header = `Broadcast received..`;
-        this.callout.body = `Using audio device: ${audio[0].label}`;
+      //callout for admin
+      this.callout.class = "callout-success";
+      this.callout.icon = "fa fa-warning";
+      this.callout.header = `Recording...`;
+      this.callout.body = "Recording voice media";
 
-        //alert for members
-        this.alert.class = 'alert-warning';
-        this.alert.icon = 'fa fa-warning';
-        this.alert.header = `Broadcast received..`;
-        this.alert.body = `Using audio device: ${audio[0].label}`;
+      log(this.rec.state);
+    },
+
+    stopRecording() {
+      log("Stopping broadcast");
+
+      this.callout.class = "callout-danger";
+      this.callout.icon = "fa fa-danger";
+      this.callout.header = "Stopping Recording..";
+      this.callout.body = `${this.user.name} wants to stop recording broadcast`;
+
+      this.rec.stop();
+      this.recording = false;
+      this.loading = false;
+
+      log(this.rec.state);
+      //this.rec.clear();
+
+      //$("#modal-fill").modal("hide");
+    },
+
+    saveRecording() {
+      if (this.recording && !this.recorded) {
+        this.callout.class = "callout-danger";
+        this.callout.icon = "fa fa-danger";
+        this.callout.header = "Something Went Wrong!";
+        this.callout.body = `Make sure you have a valid recorded broadcast before uploading`;
+        return;
+      }
+
+      if (this.recordedBroadcast == null) {
+        this.callout.class = "callout-danger";
+        this.callout.icon = "fa fa-danger";
+        this.callout.header = "No Recorded File To Upload";
+        this.callout.body = `The recorded broadcast is empty! Make sure you record a broadcast before uploading`;
+
+        return;
+      }
+
+      this.loading = true;
+      this.uploading = true;
+
+      log("sending to server");
+
+      let url = `/upload-broadcast`;
+
+      let formData = new FormData();
+
+      formData.append("audio", this.recordedBroadcast);
+
+      let headers = { "Content-Type": "multipart/form-data" };
+
+      axios
+        .post(url, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          onUploadProgress: function (progressEvent) {
+            this.uploadPercentage = parseInt(
+              Math.round((progressEvent.loaded / progressEvent.total) * 100)
+            );
+          }.bind(this),
+        })
+        .then((success) => {
+          $("#modal-fill").modal("hide");
+
+          Toast.fire({
+            type: "success",
+            title: "Successfully uploaded broadcast!",
+          });
+
+          this.loading = false;
+          this.uploading = false;
+
+          this.$router.push({ name: 'Broadcasts' })
+        })
+    },
+
+    playBroadcast() {
+      if (this.broadcastAvailable) {
+        let remoteAudio = document.getElementById("remoteAudio");
+        remoteAudio.play();
       }
     },
 
-    // Send signaling data via Scaledrone
-    async sendSignal(details) {
-      let user = this.user.id;
-      log(details['content'])
-
-      var message = { from: user, type: details['type'], subtype: details['subtype'], content: details['content'], time: new Date() };
-      await axios.post('/trigger-broadcast', {message: message});
-    },
-
-    startBroadcast() {
-      // Add local stream
-      this.addLocalStream();
-      this.broadcasting = true;
-
-      if (this.isBroadcaster) {
-        this.createBroadcast();
-      } else {
-        this.createAnswer()
+    pauseBroadcast() {
+      if (this.broadcastAvailable) {
+        let remoteAudio = document.getElementById("remoteAudio");
+        remoteAudio.pause();
       }
     },
 
-    createPeerConnection() {
-      this.pc = new RTCPeerConnection(this.configuration);
-      log(`${this.user.name} Created peer connection object`);
-    },
-
-    addLocalStream(){
-      this.pc.addStream(this.localStream)
-    },
-
-    onIceCandidates() {
-      // send any ice candidates to the other peer
-      log(`${this.user.name} starting onice candidate`);
-      var limit = 0;
-      
-      this.pc.onicecandidate = ({ candidate }) => {
-        if (limit == 0) {
-          var details = [];
-            
-          details['type'] = 'signal';
-          details['subtype'] = 'candidate';
-          details['content'] = candidate;
-          
-          this.sendSignal(details);
-
-          //Limit the number of ICEs to be sent to avoid recuring multiple times
-          limit = 1;
-        } else {
-          return;
-        }
-      };
-    },
-
-    onAddStream() {
-      log(`${this.user.name} starting onadd stream`);
-
-      this.pc.onaddstream = (event) => {
-        if(!this.remoteAudio.srcObject && event.stream) {
-          this.remoteStream = event.stream
-          this.remoteAudio.srcObject = this.remoteStream;
-        }
+    stopBroadcast() {
+      if (this.broadcastAvailable) {
+        let remoteAudio = document.getElementById("remoteAudio");
+        remoteAudio.pause();
+        remoteAudio.currentTime = 0;
       }
-    },
-
-    createBroadcast() {
-      log(`${this.user.name} wants to start a broadcast`); 
-      this.callout.class = 'callout-warning';
-      this.callout.icon = 'fa fa-warning';
-      this.callout.header = 'Sending Broadcast...';
-      this.callout.body = `Sending broadcast to all premium members..`;  
-      this.createOffer();
-    },
-
-    async setRemoteDescription(remoteDesc) {
-      try {
-        log(`${this.user.name} setRemoteDescription: start`);
-        await this.pc.setRemoteDescription(remoteDesc);
-        
-        log(`${this.user.name} setRemoteDescription: finished`);
-      } catch (error) {
-        log(`Error setting the RemoteDescription with ${this.user.name}. Error: ${error}`);
-      }
-    },
-
-    async createAnswer() {
-      log(`${this.user.name} create an answer: start`);
-      try {
-        const answer = await this.pc.createAnswer();
-
-        log(`Answer from ${this.user.name}\n ${answer.sdp}`);
-        log(`${this.user.name} setLocalDescription: start`);
-                
-        await this.pc.setLocalDescription(answer);
-                
-        log(`${this.user.name} setLocalDescription: finished`);
-        
-        this.alert.class = 'alert-success';
-        this.alert.icon = 'fa fa-check';
-        this.alert.header = 'Answering Broadcast...';
-        this.alert.body = `${this.user.name} has joined the broadcast`;
-
-        this.sendSignalingMessage(this.pc.localDescription, false);
-      } catch (error) {
-        log(`Error creating the answer from ${this.user.name}. Error: ${error}`);
-
-        this.alert.class = 'alert-danger';
-        this.alert.icon = 'fa fa-ban';
-        this.alert.header = 'Failed To Join Broadcast...';
-        this.alert.body = `Error creating the answer from ${this.user.name}. Error: ${error}`;
-      }
-    },
-
-    async createOffer() {
-      log(`${this.user.name} create an offer: start`);
-            
-      try {
-        const offer = await this.pc.createOffer(this.offerOptions);
-
-        log(`Offer from ${this.user.name}\n ${offer.sdp}`);
-        log(`${this.user.name} setLocalDescription: start`);
-                
-        await this.pc.setLocalDescription(offer);
-                
-        log(`${this.user.name} setLocalDescription: finished`);
-
-        this.callout.class = 'callout-success';
-        this.callout.icon = 'fa fa-check';
-        this.callout.header = 'Initialization Completed..';
-        this.callout.body = `${this.user.name} finished creating offer. Now waiting for members to join the broadcast.`;
-
-        this.loading = false;
-                
-        this.sendSignalingMessage(this.pc.localDescription, true);
-      } catch (error) {
-        log(`Error creating the offer from ${this.user.name}. Error: ${error}`);
-        
-        this.callout.class = 'callout-danger';
-        this.callout.icon = 'fa fa-ban';
-        this.callout.header = 'Initialization Failed!';
-        this.callout.body = `Error creating the offer from ${this.user.name}. Error: ${error}`;
-      }
-    },
-
-    sendSignalingMessage(desc, offer) {
-      const isOffer = offer ? "offer" : "answer";
-      log(`${this.user.name} sends the ${isOffer} through the signal channel`);
-      
-      // send the offer to the other peer
-      var details = [];
-            
-      details['type'] = 'signal';
-      details['subtype'] = isOffer;
-      details['content'] = desc;
-      
-      this.sendSignal(details);
-    },
-
-    onSignalMessage(m) {
-      log(m.subtype);
-      this.broadcastAvailable = true;
-
-      if(m.subtype === 'offer') {
-        log('got remote offer from ' + m.from + ', content ' + m.content);
-        this.onSignalOffer(m.content);
-      } else if(m.subtype === 'answer') {
-        this.onSignalAnswer(m.content);
-      } else if(m.subtype === 'candidate') {
-        log('got remote candidate from ' + m.from + ', content ' + m.content);
-        this.onSignalCandidate(m.content);
-      } else if(m.subtype === 'leave') {
-        this.onSignalLeave();
-      } else if(m.subtype === 'close') {
-        this.onSignalClose();
-      } else {
-        console.log('unknown signal type ' + m.subtype);
-      }
-    },
-
-    async onSignalOffer(offer) {
-      log('onsignal offer')
-      this.offer = offer;
-      
-      //alert for members
-      this.alert.class = 'alert-success';
-      this.alert.icon = 'fa fa-check';
-      this.alert.header = this.getSettingsByIndex('site_name') + ` Started A Broadcast!`;
-      this.alert.body = 'Broadcast has started. To listen, join the broadcast by clicking on the play button';
-            
-      var data = {
-        type: this.offer.type,
-        sdp: this.offer.sdp += "\n"
-      }
-      
-      await this.setRemoteDescription(data);      
-      $('#alert-answer').fadeIn(500);
-    },
-
-    async answerBroadcast() {
-      this.isBroadcaster = false;
-      log(`Requesting ${this.user.name} video stream`);
-      
-      await this.getUserVoiceMedia();
-      await this.getAudio();
-
-      this.startBroadcast();
-      
-    },
-
-    async onSignalAnswer(answer) {
-      log('onRemoteAnswer : ' + answer);
-
-      var data = {
-        type: answer.type,
-        sdp: answer.sdp += "\n"
-      }
-      
-      await this.setRemoteDescription(data);
-      this.onSetRemoteSuccess(this.pc);
-    },
-
-    onSetRemoteSuccess(pc) {
-      Toast.fire({
-        type: "success",
-        title: "New user connected!"
-      });
-
-      this.connectedUsers += 1;
-      log(pc + ' setRemoteDescription complete');
-    },
-
-    async onSignalCandidate(candidate) {
-      try {
-        log(`${this.user.name} attempting to add a candidate`);
-        await this.pc.addIceCandidate(new RTCIceCandidate(candidate));
-        log(`Candidate added`);
-      } catch (error) {
-        log(`Error adding a candidate in ${this.user.name}. Error: ${error}`)
-      }
-    },
-
-    onSignalLeave() {
-      this.connectedUsers -= 1;
-    },
-
-    onSignalClose() {
-      log('Ending broadcast');
-      
-      this.leaveBroadcast();
-    },
-    
-    //Video call already going on and member wants to end it
-    async endBroadcast() {
-      $('#modal-fill').modal('hide');
-
-      Swal.fire({
-        title: "Are You Sure?",
-        type: "info",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes Stop Broadcast"
-      }).then(result => {
-        if (result.value) {
-          let details = [];
-
-          details['type'] = 'signal';
-          details['subtype'] = 'close';
-          details['content'] = 'ending the broadcast';
-
-
-          log('Ending broadcast');
-          this.callout.class = 'callout-danger';
-          this.callout.icon = 'fa fa-danger';
-          this.callout.header = 'Killing broadcast..';
-          this.callout.body = `${this.user.name} wants to end the broadcast`;
-
-          this.sendSignal(details);
-
-          this.pc.close();
-          this.pc = null;
-
-          this.broadcasting = false;
-
-          this.closeMedia();
-          this.clearView();
-        }
-      });
-    },
-
-    leaveBroadcast() {
-      //member wants to leave the broadcast
-      this.alert.class = 'alert-danger';
-      this.alert.icon = 'fa fa-ban';
-      this.alert.header = `Leaving broadcast..`;
-      this.alert.body = `${this.user.name} has left the broadcast.`;
-
-      let details = [];
-
-      details['type'] = 'signal';
-      details['subtype'] = 'leave';
-      details['content'] = 'leaving the broadcast';
-
-      this.sendSignal(details);
-
-      this.pc.close();
-      this.pc = null;
-
-      this.broadcasting = false;
-                
-      this.closeMedia();
-      this.clearView();
-    },
-
-    closeMedia() {
-      this.localStream.getTracks().forEach(function(track){track.stop();});
-    },
-
-    clearView() {
-      this.myAudio.srcObject = null;
-      this.remoteAudio.srcObject = null;
-      
-      Toast.fire({
-        type: "success",
-        title: "You left the broadcast!"
-      });
     },
 
     logout() {
       document.getElementById("logout-form").submit();
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style>
-.skin-yellow .sidebar-menu>li:hover>a, .skin-yellow .sidebar-menu>li >a.router-link-exact-active, .skin-yellow .sidebar-menu>li.menu-open>a{
+.skin-yellow .sidebar-menu > li:hover > a,
+.skin-yellow .sidebar-menu > li > a.router-link-exact-active,
+.skin-yellow .sidebar-menu > li.menu-open > a {
   color: #ffffff;
   background: #303030;
 }

@@ -18,6 +18,9 @@ use Spatie\Sluggable\SlugOptions;
 use Wildside\Userstamps\Userstamps;
 use Spatie\Permission\Traits\HasRoles;
 
+use App\Post;
+use App\Broadcast;
+
 class User extends Authenticatable
 {
     use Notifiable, SoftDeletes, Userstamps, HasSlug,  HasRoles;
@@ -59,8 +62,17 @@ class User extends Authenticatable
     ];
 
     protected $appends = ['avatar_url', 'all_permissions', 'can'];
-    
 
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function broadcasts()
+    {
+        return $this->hasMany(Broadcast::class);
+    }
+    
     public function getSlugOptions() : SlugOptions
     {
         return SlugOptions::create()

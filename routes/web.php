@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 //     return 'ok';
 // });
 
+
 Route::get('/', function () {
     return view('home');
 })->name('home');
@@ -79,7 +80,13 @@ Route::group(['middleware' => ['auth']], function () {
 
         //Admin settings
         Route::any('/settings', 'AdminController@settings')->name('admin.settings');
-        Route::post('/trigger-broadcast', 'BroadcastController@triggerBroadcast')->name('user.triggerBroadcast');
+
+        //Broadcasts
+        Route::get('/all-broadcasts', 'BroadcastController@index')->name('user.broadcasts');
+        Route::post('/upload-broadcast', 'BroadcastController@upload')->name('user.uploadBroadcast');
+        Route::post('/stream-broadcast', 'BroadcastController@stream')->name('user.streamBroadcast');
+        Route::post('/delete-broadcast', 'BroadcastController@destroy')->name('user.destroyBroadcast');
+        Route::post('/trigger-broadcast', 'BroadcastController@trigger')->name('user.triggerBroadcast');
 
         //profile update
         Route::post('/update-user', 'UsersController@update')->name('user.update');

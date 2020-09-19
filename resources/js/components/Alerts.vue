@@ -130,13 +130,22 @@ export default {
       Echo.private("broadcast").listen("NewBroadcast", data => {
         console.log("Broadcast Alert:" + data);
 
-        if (data.subtype === 'offer') {
-          this.user = this.getSettingsByIndex('site_name');
-          this.avatar = '/storage/site/' + this.getSettingsByIndex('logo');
+        
+          this.user = data.username;
+          this.avatar = data.avatar;
           this.slug = '';
 
           this.showBroadcast();
-        }
+        
+        
+
+        // if (data.subtype === 'offer') {
+        //   this.user = this.getSettingsByIndex('site_name');
+        //   this.avatar = '/storage/site/' + this.getSettingsByIndex('logo');
+        //   this.slug = '';
+
+        //   this.showBroadcast();
+        // }
       });
     },
 
