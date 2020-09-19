@@ -178,8 +178,6 @@ return [
         Laravolt\Avatar\ServiceProvider::class,
         \Torann\GeoIP\GeoIPServiceProvider::class,
 
-        ProtoneMedia\LaravelFFMpeg\Support\ServiceProvider::class,
-
     ],
 
     /*
@@ -233,7 +231,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Avatar'    => Laravolt\Avatar\Facade::class,
         'GeoIP' => \Torann\GeoIP\Facades\GeoIP::class,
-        'FFMpeg' => ProtoneMedia\LaravelFFMpeg\Support\FFMpeg::class,
 
     ],
 
