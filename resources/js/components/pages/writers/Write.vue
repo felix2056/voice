@@ -25,7 +25,7 @@
             <form @submit.prevent="createPost">
               <div class="box-body bg-dark">
                 <div class="form-group">
-                  <input class="form-control" v-model="input.headline" placeholder="Headline" />
+                  <input class="form-control" v-model="headline" placeholder="Headline" />
                   <span class="text-danger">{{ String(errors.headline) }}</span>
                 </div>
               </div>
@@ -58,14 +58,10 @@ export default {
       user: Laravel.user,
       posting: false,
 
-      input: {
-        headline: "",
-        body: ""
-      },
+      headline: "",
 
       errors: {
-        headline: "",
-        body: ""
+        headline: ""
       }
     };
   },
@@ -82,26 +78,28 @@ export default {
         return;
       }
 
-      if (this.input.headline == "") {
-        return;
-      } else if (this.input.body == "") {
+      if (this.headline == "") {
         return;
       }
 
       this.posting = true;
 
-      let headline = this.input.headline;
-      let body = this.input.body;
+      let headline = this.headline;
 
       let url = `/create-post`;
 
       axios
-        .post(url, { headline: headline, body: body })
+        .post(url, { headline: headline })
         .then(response => {
           this.posting = false;
+          this.headline = "";
 
-          this.input.headline = "";
-          this.input.body = "";
+          Toast.fire({
+            type: "success",
+            title: "Posted new headline!",
+          });
+
+          this.$router.push({name: 'Newsfeed'})
         })
         .catch(error => {
           this.posting = false;
@@ -109,9 +107,6 @@ export default {
           error.response.data.error.headline
             ? (this.errors.headline = error.response.data.error.headline)
             : (this.errors.headline = "");
-          error.response.data.error.body
-            ? (this.errors.body = error.response.data.error.body)
-            : (this.errors.body = "");
         });
     }
   }

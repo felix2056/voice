@@ -37,7 +37,6 @@ class PostsController extends Controller
         $user = User::find(Auth::user()->id);
 
         $headline = $request->headline;
-        $body = $request->body;
 
         $post = new Post();
         $post->user_id = $user->id;

@@ -16,7 +16,7 @@
                   <a class="box-btn-slide" href="#"></a>
                 </li>
                 <li>
-                  <a class="box-btn-fullscreen" href="#"></a>
+                  <a class="box-btn-fullscreen" @click="setNavIndexLow" href="#"></a>
                 </li>
                 <li>
                   <span
@@ -192,6 +192,10 @@ export default {
             ? (this.errors.message = error.response.data.error.message)
             : null;
         });
+    },
+
+    setNavIndexLow() {
+      //navbar = document.getElementById()
     }
   }
 };

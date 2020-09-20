@@ -8239,6 +8239,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         _this4.sending = false;
         error.response.data.error.message ? _this4.errors.message = error.response.data.error.message : null;
       });
+    },
+    setNavIndexLow: function setNavIndexLow() {//navbar = document.getElementById()
     }
   }
 });
@@ -13972,13 +13974,9 @@ __webpack_require__.r(__webpack_exports__);
     return {
       user: Laravel.user,
       posting: false,
-      input: {
-        headline: "",
-        body: ""
-      },
+      headline: "",
       errors: {
-        headline: "",
-        body: ""
+        headline: ""
       }
     };
   },
@@ -13995,27 +13993,29 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
-      if (this.input.headline == "") {
-        return;
-      } else if (this.input.body == "") {
+      if (this.headline == "") {
         return;
       }
 
       this.posting = true;
-      var headline = this.input.headline;
-      var body = this.input.body;
+      var headline = this.headline;
       var url = "/create-post";
       axios.post(url, {
-        headline: headline,
-        body: body
+        headline: headline
       }).then(function (response) {
         _this.posting = false;
-        _this.input.headline = "";
-        _this.input.body = "";
+        _this.headline = "";
+        Toast.fire({
+          type: "success",
+          title: "Posted new headline!"
+        });
+
+        _this.$router.push({
+          name: 'Newsfeed'
+        });
       })["catch"](function (error) {
         _this.posting = false;
         error.response.data.error.headline ? _this.errors.headline = error.response.data.error.headline : _this.errors.headline = "";
-        error.response.data.error.body ? _this.errors.body = error.response.data.error.body : _this.errors.body = "";
       });
     }
   }
@@ -69016,7 +69016,25 @@ var render = function() {
             attrs: { id: "direct-chat" }
           },
           [
-            _vm._m(0),
+            _c("div", { staticClass: "box-header with-border" }, [
+              _c("h4", { staticClass: "box-title" }, [_vm._v("Chatroom")]),
+              _vm._v(" "),
+              _c("ul", { staticClass: "box-controls pull-right" }, [
+                _vm._m(0),
+                _vm._v(" "),
+                _vm._m(1),
+                _vm._v(" "),
+                _c("li", [
+                  _c("a", {
+                    staticClass: "box-btn-fullscreen",
+                    attrs: { href: "#" },
+                    on: { click: _vm.setNavIndexLow }
+                  })
+                ]),
+                _vm._v(" "),
+                _vm._m(2)
+              ])
+            ]),
             _vm._v(" "),
             _c("div", { staticClass: "box-body" }, [
               _vm.messages.length > 0
@@ -69172,37 +69190,35 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "box-header with-border" }, [
-      _c("h4", { staticClass: "box-title" }, [_vm._v("Chatroom")]),
-      _vm._v(" "),
-      _c("ul", { staticClass: "box-controls pull-right" }, [
-        _c("li", [
-          _c("a", { staticClass: "box-btn-close", attrs: { href: "#" } })
-        ]),
-        _vm._v(" "),
-        _c("li", [
-          _c("a", { staticClass: "box-btn-slide", attrs: { href: "#" } })
-        ]),
-        _vm._v(" "),
-        _c("li", [
-          _c("a", { staticClass: "box-btn-fullscreen", attrs: { href: "#" } })
-        ]),
-        _vm._v(" "),
-        _c("li", [
-          _c(
-            "span",
-            {
-              staticClass: "badge badge-pill badge-success",
-              attrs: {
-                "data-toggle": "tooltip",
-                title: "",
-                "data-original-title": "1 New Messages"
-              }
-            },
-            [_vm._v("5")]
-          )
-        ])
-      ])
+    return _c("li", [
+      _c("a", { staticClass: "box-btn-close", attrs: { href: "#" } })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("li", [
+      _c("a", { staticClass: "box-btn-slide", attrs: { href: "#" } })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("li", [
+      _c(
+        "span",
+        {
+          staticClass: "badge badge-pill badge-success",
+          attrs: {
+            "data-toggle": "tooltip",
+            title: "",
+            "data-original-title": "1 New Messages"
+          }
+        },
+        [_vm._v("5")]
+      )
     ])
   }
 ]
@@ -78246,19 +78262,19 @@ var render = function() {
                           {
                             name: "model",
                             rawName: "v-model",
-                            value: _vm.input.headline,
-                            expression: "input.headline"
+                            value: _vm.headline,
+                            expression: "headline"
                           }
                         ],
                         staticClass: "form-control",
                         attrs: { placeholder: "Headline" },
-                        domProps: { value: _vm.input.headline },
+                        domProps: { value: _vm.headline },
                         on: {
                           input: function($event) {
                             if ($event.target.composing) {
                               return
                             }
-                            _vm.$set(_vm.input, "headline", $event.target.value)
+                            _vm.headline = $event.target.value
                           }
                         }
                       }),
@@ -101200,14 +101216,15 @@ __webpack_require__.r(__webpack_exports__);
 /*!*********************************************************!*\
   !*** ./resources/js/components/pages/writers/Write.vue ***!
   \*********************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Write_vue_vue_type_template_id_f482906c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Write.vue?vue&type=template&id=f482906c& */ "./resources/js/components/pages/writers/Write.vue?vue&type=template&id=f482906c&");
 /* harmony import */ var _Write_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Write.vue?vue&type=script&lang=js& */ "./resources/js/components/pages/writers/Write.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _Write_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _Write_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -101237,7 +101254,7 @@ component.options.__file = "resources/js/components/pages/writers/Write.vue"
 /*!**********************************************************************************!*\
   !*** ./resources/js/components/pages/writers/Write.vue?vue&type=script&lang=js& ***!
   \**********************************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
