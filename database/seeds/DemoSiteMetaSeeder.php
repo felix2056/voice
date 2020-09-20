@@ -5,6 +5,7 @@ use Illuminate\Database\Seeder;
 use App\Setting;
 use App\AboutContent;
 use App\Post;
+use App\Broadcast;
 use Carbon\Carbon;
 use Faker\Factory;
 
@@ -70,6 +71,7 @@ class DemoSiteMetaSeeder extends Seeder
         DB::statement("SET foreign_key_checks=0");
 
         Setting::truncate();
+        Broadcast::truncate();
         AboutContent::truncate();
         User::truncate();
         Role::truncate();
@@ -340,11 +342,10 @@ class DemoSiteMetaSeeder extends Seeder
     {
         $faker = Factory::create();
 
-        for($i = 0; $i < 30; $i++) {
+        for($i = 0; $i < 10; $i++) {
             $posts = Post::create([
                 'user_id' => rand(1, 10),
-                'headline' => 'Covid-19 New Cases',
-                'body' => $faker->text
+                'headline' => 'Covid-19 New Cases'
             ]);
         }
     }
