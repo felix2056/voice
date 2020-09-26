@@ -38,6 +38,8 @@ class User extends Authenticatable
         'provider', 
         'provider_id',
         'avatar',
+        'postalcode',
+        'bio',
         'country',
         'last_login_at',
         'last_login_ip',

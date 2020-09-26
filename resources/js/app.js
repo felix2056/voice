@@ -69,6 +69,9 @@ Vue.use(VueTimeago, {
     
 })
 
+import ReadMore from 'vue-read-more';
+Vue.use(ReadMore);
+
 import NProgress from "nprogress";
 import "../../node_modules/nprogress/nprogress.css";
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\NewPost;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,6 +24,16 @@ Route::get('/', function () {
     return view('home');
 })->name('home');
 
+Route::get('/test', function () {
+    $data = [
+        'username' => 'daniel',
+        'avatar' => 'avatar',
+        'headline' => 'headline'
+    ];
+    
+    broadcast(new NewPost($data))->toOthers();
+});
+
 Auth::routes();
 
 Route::group(['middleware' => ['auth']], function () {
@@ -41,6 +52,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/members', 'UsersController@members')->name('user.members.index');
         Route::get('/profile/{slug}', 'UsersController@show')->name('user.profile.shoe');
         Route::post('/profile/update', 'UsersController@update')->name('user.profile.update');
+        Route::post('/profile/delete', 'UsersController@destroy')->name('user.profile.destroy');
 
         //Get chatroom messages
         Route::get('/chatroom', 'ChatroomController@chatroom')->name('user.chatroom.index');
@@ -73,6 +85,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/my-posts', 'PostsController@myPosts')->name('user.posts.my-posts');
         Route::get('/post/{slug}', 'PostsController@show')->name('user.posts.show');
         Route::post('/create-post', 'PostsController@store')->name('user.posts.store');
+        Route::post('/update-post', 'PostsController@update')->name('user.posts.update');
         Route::post('/delete-post', 'PostsController@destroy')->name('user.posts.delete');
 
         //Recent profiles

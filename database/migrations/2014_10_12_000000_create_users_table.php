@@ -30,11 +30,8 @@ class CreateUsersTable extends Migration
       $table->string('city')->nullable();
       $table->string('state')->nullable();
       $table->string('postalcode')->nullable();
+      $table->text('bio')->nullable();
       $table->string('country')->nullable();
-      $table->string('facebook')->nullable();
-      $table->string('instagram')->nullable();
-      $table->string('twitter')->nullable();
-      $table->string('linkedin')->nullable();
       $table->softDeletes();
       $table->unsignedBigInteger('created_by')->nullable();
       $table->unsignedBigInteger('updated_by')->nullable();

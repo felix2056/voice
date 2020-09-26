@@ -25,14 +25,15 @@
             <form @submit.prevent="createPost">
               <div class="box-body bg-dark">
                 <div class="form-group">
-                  <input class="form-control" v-model="headline" placeholder="Headline" />
+                  <textarea class="form-control" v-model="headline" placeholder="Headline" cols="30" rows="10"></textarea>
                   <span class="text-danger">{{ String(errors.headline) }}</span>
                 </div>
               </div>
               <div class="box-footer bg-dark">
                 <div class="pull-right">
                   <button type="submit" :disabled="disabled" class="btn btn-success">
-                    <i class="fa fa-envelope-o"></i>
+                    <i v-if="posting" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+                    <i v-else class="fa fa-envelope-o"></i>
                     {{ posting ? 'Posting..' : 'Post' }}
                   </button>
                 </div>

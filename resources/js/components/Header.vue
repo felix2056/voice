@@ -124,7 +124,7 @@
             <!-- Control Sidebar Toggle Button -->
             <li>
               <a href="#" data-toggle="control-sidebar">
-                <i class="fa fa-comments fa-spin"></i>
+                <i class="fa fa-comments"></i>
               </a>
             </li>
           </ul>
@@ -240,19 +240,19 @@
             </router-link>
           </li>-->
 
-          <li>
+          <!-- <li>
             <router-link :to="{ name: 'Billing' }">
               <i class="icon-wallet"></i>
               <span>Billing</span>
             </router-link>
-          </li>
+          </li> -->
 
-          <li>
+          <!-- <li>
             <router-link :to="{ name: 'Pricing' }">
               <i class="icon-paypal"></i>
               <span>Pricing</span>
             </router-link>
-          </li>
+          </li> -->
 
           <li v-if="$is('Admin') || $is('Broadcaster')" class="header nav-small-cap">BROADCASTERS</li>
 
@@ -309,7 +309,7 @@
     </aside>
 
     <!-- Right side column. contains easy access to the chatroom -->
-    <aside class="control-sidebar control-sidebar-dark">
+    <aside class="control-sidebar control-sidebar-dark" style="height: auto; padding-bottom: 0;">
       <!-- Tab panes -->
       <div class="tab-content">
         <mini-chatroom></mini-chatroom>
@@ -558,7 +558,6 @@ export default {
       Echo.private("broadcast").listen("NewBroadcast", (data) => {
         let remoteAudio = document.getElementById("remoteAudio");
         remoteAudio.src = data.source;
-        
 
         self.broadcastAvailable = true;
 
@@ -566,7 +565,9 @@ export default {
         self.alert.class = "alert-success";
         self.alert.icon = "fa fa-success";
         self.alert.header = `Broadcast Available..`;
-        self.alert.body = "Play the broadcast";
+        self.alert.body = "Playing broadcast";
+
+        this.playBroadcast();
       });
     },
 

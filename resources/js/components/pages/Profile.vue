@@ -23,15 +23,14 @@
           <!-- Profile Image -->
           <div class="box bg-inverse bg-dark bg-hexagons-white">
             <div class="box-body box-profile">
-                <img
+                <!-- <img
                 v-if="profile.id == user.id"
                 class="profile-user-img rounded-circle img-fluid mx-auto d-block"
                 :src="avatar_image"
                 :alt="profile.name"
-              />
+              /> -->
 
               <img
-                v-else
                 class="profile-user-img rounded-circle img-fluid mx-auto d-block"
                 :src="avatar_image"
                 :alt="profile.name"
@@ -47,7 +46,7 @@
 
               <h3 class="profile-username text-center">{{ profile.name }}</h3>
 
-              <p class="text-center">{{ profile.roles[0].name }}</p>
+              <!-- <p class="text-center">{{ profile.roles[0].name }}</p> -->
 
               <div v-if="profile.id == user.id" class="row social-states">
                 <div class="col-12 text-center">
@@ -73,38 +72,14 @@
                       {{ profile.street }}
                     </p>
 
-                    <div v-if="profile.id != user.id" class="user-social-acount">
+                    <!-- <div v-if="profile.id != user.id" class="user-social-acount">
                       <router-link
                         :to="{ name: 'Chat', params: { slug: profile.slug  } }"
                         class="btn btn-block btn-social btn-foursquare"
                       >
                         <i class="fa fa-comments-o"></i> Send Message
                       </router-link>
-                    </div>
-
-                    <p class="mt-25">Social Profile</p>
-                    <div class="user-social-acount">
-                      <button class="btn btn-block btn-social btn-facebook">
-                        <i class="fa fa-facebook"></i> Facebook
-                      </button>
-                      <button class="btn btn-block btn-social btn-twitter">
-                        <i class="fa fa-twitter"></i> Twitter
-                      </button>
-                      <button class="btn btn-block btn-social btn-instagram">
-                        <i class="fa fa-instagram"></i> Instagram
-                      </button>
-                      <button class="btn btn-block btn-social btn-linkedin">
-                        <i class="fa fa-linkedin"></i> Linkedin
-                      </button>
-                    </div>
-                    <div class="map-box mt-25 mb-0">
-                      <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2805244.1745767146!2d-86.32675167439648!3d29.383165774894163!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88c1766591562abf%3A0xf72e13d35bc74ed0!2sFlorida%2C+USA!5e0!3m2!1sen!2sin!4v1501665415329"
-                        height="150"
-                        class="w-p100 b-0"
-                        allowfullscreen
-                      ></iframe>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
               </div>
@@ -275,100 +250,38 @@
                         <label class="col-sm-6 col-form-label">{{ profile.postalcode }}</label>
                       </div>
                     </div>
+
+                     <div class="form-group row" :class="{ 'has-error': errors.postalcode != '' }">
+                      <label class="col-sm-2 col-form-label">Bio</label>
+                      <div v-if="user.id == profile.id" class="col-sm-10">
+                        <textarea class="form-control" v-model="profile.bio" cols="30" rows="10"></textarea>
+                        
+                        <label
+                          v-if="errors.bio != ''"
+                          class="control-label"
+                          for="inputError"
+                        >
+                          <i class="fa fa-times-circle-o"></i>
+                          {{ String(errors.bio) }}
+                        </label>
+                      </div>
+                      <div v-else class="col-sm-10">
+                        <label class="col-sm-6 col-form-label">{{ profile.bio }}</label>
+                      </div>
+                    </div>
                   </div>
                   <!-- /.col -->
                 </div>
 
                 <div class="row">
                   <div class="col-12">
-                    <div class="form-group row" :class="{ 'has-error': errors.facebook != '' }">
-                      <label class="col-sm-2 col-form-label">Facebook</label>
-                      <div v-if="user.id == profile.id" class="col-sm-10">
-                        <input
-                          class="form-control"
-                          type="text"
-                          v-model="profile.facebook"
-                          placeholder="facebook id"
-                        />
-                        <label v-if="errors.facebook != ''" class="control-label" for="inputError">
-                          <i class="fa fa-times-circle-o"></i>
-                          {{ String(errors.facebook) }}
-                        </label>
-                      </div>
-                      <div v-else class="col-sm-10">
-                        <label class="col-sm-6 col-form-label">{{ profile.facebook }}</label>
-                      </div>
-                    </div>
-
-                    <div class="form-group row" :class="{ 'has-error': errors.instagram != '' }">
-                      <label class="col-sm-2 col-form-label">Instagram</label>
-                      <div v-if="user.id == profile.id" class="col-sm-10">
-                        <input
-                          class="form-control"
-                          type="text"
-                          v-model="profile.instagram"
-                          placeholder="instagram id"
-                        />
-                        <label v-if="errors.instagram != ''" class="control-label" for="inputError">
-                          <i class="fa fa-times-circle-o"></i>
-                          {{ String(errors.instagram) }}
-                        </label>
-                      </div>
-                      <div v-else class="col-sm-10">
-                        <label class="col-sm-6 col-form-label">{{ profile.instagram }}</label>
-                      </div>
-                    </div>
-
-                    <div class="form-group row" :class="{ 'has-error': errors.twitter != '' }">
-                      <label class="col-sm-2 col-form-label">Twitter</label>
-                      <div v-if="user.id == profile.id" class="col-sm-10">
-                        <input
-                          class="form-control"
-                          type="text"
-                          v-model="profile.twitter"
-                          placeholder="twitter id"
-                        />
-                        <label v-if="errors.twitter != ''" class="control-label" for="inputError">
-                          <i class="fa fa-times-circle-o"></i>
-                          {{ String(errors.twitter) }}
-                        </label>
-                      </div>
-                      <div v-else class="col-sm-10">
-                        <label class="col-sm-6 col-form-label">{{ profile.twitter }}</label>
-                      </div>
-                    </div>
-
-                    <div class="form-group row" :class="{ 'has-error': errors.linkedin != '' }">
-                      <label class="col-sm-2 col-form-label">Linkedin</label>
-                      <div v-if="user.id == profile.id" class="col-sm-10">
-                        <input
-                          class="form-control"
-                          type="text"
-                          v-model="profile.linkedin"
-                          placeholder="linkedin id"
-                        />
-                        <label v-if="errors.linkedin != ''" class="control-label" for="inputError">
-                          <i class="fa fa-times-circle-o"></i>
-                          {{ String(errors.linkedin) }}
-                        </label>
-                      </div>
-                      <div v-else class="col-sm-10">
-                        <label class="col-sm-6 col-form-label">{{ profile.linkedin }}</label>
-                      </div>
-                    </div>
-
-                    <div class="form-group row">
-                      <label class="col-sm-2 col-form-label">Toggle social visibility</label>
-
-                      <div class="col-sm-10">
-                        <input type="checkbox" name="toggleSocial" id />
-                      </div>
-                    </div>
-
                     <div v-if="user.id == profile.id" class="form-group row">
                       <label class="col-sm-2 col-form-label"></label>
                       <div class="col-sm-10">
-                        <button type="submit" class="btn btn-yellow">Submit</button>
+                        <button type="submit" class="btn btn-yellow">
+                          <i v-if="saving" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+                          {{ saving ? 'Saving..' : 'Save Changes' }}
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -393,6 +306,8 @@ export default {
       avatarAttachment: null,
       avatarData: null,
 
+      saving: false,
+
       errors: {
         name: "",
         email: "",
@@ -401,11 +316,7 @@ export default {
         city: "",
         state: "",
         postalcode: "",
-
-        facebook: "",
-        instagram: "",
-        twitter: "",
-        linkedin: "",
+        bio: ""
       },
     };
   },
@@ -420,7 +331,7 @@ export default {
     },
 
     avatar_image() {
-      return this.avatarData == null ? this.user.avatar_url : this.avatarData;
+      return this.avatarData == null ? this.profile.avatar_url : this.avatarData;
     }
   },
 
@@ -473,6 +384,8 @@ export default {
         formData.append("avatar", this.avatarAttachment);
       }
 
+      this.saving = true;
+
       let data = [];
 
       formData.append("name", this.profile.name);
@@ -482,17 +395,15 @@ export default {
       formData.append("city", this.profile.city);
       formData.append("state", this.profile.state);
       formData.append("postalcode", this.profile.postalcode);
-      
-      formData.append("facebook", this.profile.facebook);
-      formData.append("instagram", this.profile.instagram);
-      formData.append("twitter", this.profile.twitter);
-      formData.append("linkedin", this.profile.linkedin);
+      formData.append("bio", this.profile.bio);
 
       let headers = { "Content-Type": "multipart/form-data" };
 
       axios
         .post(url, formData, { headers })
         .then(() => {
+          this.saving = false;
+
             Toast.fire({
                 type: "success",
                 title: "Successfully updated profile!"

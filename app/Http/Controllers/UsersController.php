@@ -73,11 +73,7 @@ class UsersController extends Controller
         $user->city = $request->city;
         $user->state = $request->state;
         $user->postalcode = $request->postalcode;
-
-        $user->facebook = $request->facebook;
-        $user->instagram = $request->instagram;
-        $user->twitter = $request->twitter;
-        $user->linkedin = $request->linkedin;
+        $user->bio = $request->bio;
 
         $user->save();
 
@@ -96,6 +92,32 @@ class UsersController extends Controller
         return response()->json([
             'success' => 'Your records has been updated'
         ]);
+    }
+
+    public function destroy(Request $request)
+    {
+        $auth = User::find(Auth::user()->id);
+        $user = User::find($request->id);
+
+        if (!$user) {
+            return response()->json('error', 'This user does not exist!');
+        }
+
+        if ($user->hasRole('Admin') ) {
+            return response()->json('error', 'This user cannot be deleted!');
+        }
+
+        if ($auth->hasRole('Admin')) {
+            $user->delete();
+
+            return response()->json([
+                'success' => 'This user has been deleted!'
+            ]); 
+        }
+
+        return response()->json([
+            'error' => 'Unresolved permission!'
+        ]);     
     }
 
     public function notifications()

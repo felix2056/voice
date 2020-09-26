@@ -30,6 +30,10 @@ Broadcast::channel('notify.{member}', function ($user, $member) {
     return $user->id == $member;
 });
 
+Broadcast::channel('post', function ($user) {
+    return Auth::check();
+});
+
 Broadcast::channel('chatroom', function ($user) {
     return Auth::check();
 });

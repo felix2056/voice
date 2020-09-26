@@ -78,7 +78,8 @@
               </a>
             </div>
             <div class="main-menubar d-flex align-items-center">
-              <nav class="hide">
+              <!-- nav class="hide" -->
+              <nav>
                 <a href="{{ route('home') }}">Home</a>
                 @auth
                   <a href="{{ route('user.dashboard') }}">Dashboard</a>
@@ -96,7 +97,7 @@
                   <a href="{{ route('register') }}" style="margin: 25px 0; display: inline-block;">Sign Up</a>
                 @endauth
               </nav>
-              <div class="menu-bar"><span class="lnr lnr-menu"></span></div>
+              {{-- <div class="menu-bar"><span class="lnr lnr-menu"></span></div> --}}
             </div>
           </div>
         </div>

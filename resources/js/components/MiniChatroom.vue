@@ -9,9 +9,9 @@
               <h4 class="box-title">Chatroom</h4>
 
               <ul class="box-controls pull-right">
-                <li>
+                <!-- <li>
                   <a class="box-btn-close" href="#"></a>
-                </li>
+                </li> -->
                 <li>
                   <a class="box-btn-slide" href="#"></a>
                 </li>

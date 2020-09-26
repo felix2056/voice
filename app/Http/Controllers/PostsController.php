@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewPost;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,7 +37,7 @@ class PostsController extends Controller
     {
         $user = User::find(Auth::user()->id);
 
-        $headline = $request->headline;
+        $headline = nl2br($request->headline);
 
         $post = new Post();
         $post->user_id = $user->id;
@@ -44,10 +45,36 @@ class PostsController extends Controller
 
         $post->save();
 
-        // broadcast(new NewPost($message->load('user')))->toOthers();
+        $data = [
+            'username' => $user->name,
+            'avatar' => $user->avatar_url,
+            'headline' => $post->headline
+        ];
+
+        broadcast(new NewPost($data))->toOthers();
 
         return response()->json([
             'success' => 'Your post has been sent!'
+        ]);        
+    }
+
+    public function update(Request $request)
+    {
+        $user = User::find(Auth::user()->id);
+
+        $headline = nl2br($request->headline);
+
+        $post = Post::find($request->id);
+
+        if ($post) {
+            $post->headline = $headline;
+            $post->save();   
+        }
+
+        // broadcast(new NewPost($message->load('user')))->toOthers();
+
+        return response()->json([
+            'success' => 'Your post has updated!'
         ]);        
     }
 

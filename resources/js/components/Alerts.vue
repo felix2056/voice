@@ -22,7 +22,7 @@
     </div>
 
     <!-- Mails alert -->
-    <div
+    <!--<div
       class="myadmin-alert myadmin-alert-img myadmin-alert-click alert-info myadmin-alert-top alerttop2"
       style="display: none;"
     >
@@ -39,9 +39,30 @@
       </router-link>
 
       <a href="#" @click="closeMail" class="closed">×</a>
+    </div>-->
+
+    <!-- Posts alert -->
+    <div
+      class="myadmin-alert myadmin-alert-img myadmin-alert-click alert-info myadmin-alert-top alerttop2"
+      style="display: none;"
+    >
+      <router-link :to="{ name: 'Single', params: { slug: slug  } }">
+        <img :src="avatar" class="img" :alt="user" />
+      </router-link>
+
+      <a href="#" @click="closeMail" class="closed">×</a>
+
+      <h4>News Update!</h4>
+      
+      <router-link :to="{ name: 'Newsfeed'}" style="text-decoration: none;">
+        <b>From {{ user }}</b>: <p v-html="headline"></p>
+      </router-link>
+
+      <a href="#" @click="closeMail" class="closed">×</a>
     </div>
 
 
+    <!-- Broadcasts alert -->
     <div class="myadmin-alert myadmin-alert-img myadmin-alert-click alert-warning myadmin-alert-bottom alertbottom2" style="display: none;">
       <img :src="avatar" class="img" :alt="user">
       
@@ -70,6 +91,7 @@ export default {
 
       user: "",
       avatar: "",
+      headline: "",
       slug: ""
     };
   },
@@ -127,6 +149,17 @@ export default {
         this.showMail();
       });
 
+      Echo.private("post").listen("NewPost", data => {
+        console.log("Post Alert:" + data);
+
+          this.user = data.username;
+          this.avatar = data.avatar;
+          this.headline = data.headline;
+          this.slug = '';
+
+          this.showPost();
+      });
+
       Echo.private("broadcast").listen("NewBroadcast", data => {
         console.log("Broadcast Alert:" + data);
 
@@ -168,6 +201,13 @@ export default {
       setTimeout(function() {
         $(".alertbottom2").fadeIn(350);
       }, 2000);
+    },
+
+    showPost() {
+      this.mailSound.play();
+      setTimeout(function() {
+        $(".alerttop2").fadeIn(350);
+      }, 5000);
     },
 
     closeMessage() {

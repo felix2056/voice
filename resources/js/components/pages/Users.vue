@@ -99,18 +99,10 @@
                         <p class="mb-0">{{ member.roles[0].name }}</p>
                       </td>
                       <td>
-                        <nav class="nav mt-2">
-                          <a class="nav-link" href="#">
-                            <i class="fa fa-facebook"></i>
-                          </a>
-                          <a class="nav-link" href="#">
-                            <i class="fa fa-twitter"></i>
-                          </a>
-                          <a class="nav-link" href="#">
-                            <i class="fa fa-github"></i>
-                          </a>
-                          <a class="nav-link" href="#">
-                            <i class="fa fa-linkedin"></i>
+                         
+                        <nav v-if="$is('Admin')" class="nav mt-2">
+                          <a @click.prevent="deleteMember(member.id)" class="nav-link text-danger" href="#" data-toggle="tooltip" title="Delete Member" data-original-title="Delete">
+                            <i class="ion-close-circled"></i>
                           </a>
                         </nav>
                       </td>
@@ -151,11 +143,33 @@ export default {
 
       let url = `/members`;
 
-      api.get(url).then(response => {
+      axios.get(url).then(response => {
         this.members = response.data.viewers;
         this.loading = false;
+      });
+    },
 
-        console.log(this.members.admins[0].name);
+    async deleteMember(id) {
+      Swal.fire({
+        title: "Are You Sure?",
+        type: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes Delete User!",
+      }).then((result) => {
+        if (result.value) {
+          let url = `/profile/delete`;
+
+          axios.post(url, { id: id }).then((response) => {
+            Toast.fire({
+              type: "success",
+              title: "Deleted!",
+            });
+
+            this.getMembers();
+          });
+        }
       });
     }
   }

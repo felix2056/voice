@@ -52,21 +52,21 @@ const router = new VueRouter({
             name: "Newsfeed",
             component: Newsfeed
         },
-        {
-            path: "/dashboard/mailbox",
-            name: "Mailbox",
-            component: Mailbox
-        },
-        {
-            path: "/dashboard/compose",
-            name: "Compose",
-            component: Compose
-        },
-        {
-            path: "/dashboard/mail/:slug",
-            name: "Single",
-            component: Single
-        },
+        // {
+        //     path: "/dashboard/mailbox",
+        //     name: "Mailbox",
+        //     component: Mailbox
+        // },
+        // {
+        //     path: "/dashboard/compose",
+        //     name: "Compose",
+        //     component: Compose
+        // },
+        // {
+        //     path: "/dashboard/mail/:slug",
+        //     name: "Single",
+        //     component: Single
+        // },
         {
             path: "/dashboard/members",
             name: "Members",
@@ -109,31 +109,31 @@ const router = new VueRouter({
                 requiresBroadcasterAccess: true
             } 
         },
-        {
-            path: "/dashboard/pricing",
-            name: "Pricing",
-            component: Pricing
-        },
-        {
-            path: "/dashboard/billing",
-            name: "Billing",
-            component: Billing
-        },
-        {
-            path: "/dashboard/chat/:slug",
-            name: "Chat",
-            component: Chat
-        },
-        {
-            path: "/dashboard/chat",
-            name: "Conversations",
-            component: Conversations
-        },
-        {
-            path: "/dashboard/chatroom",
-            name: "ChatRoom",
-            component: ChatRoom
-        },
+        // {
+        //     path: "/dashboard/pricing",
+        //     name: "Pricing",
+        //     component: Pricing
+        // },
+        // {
+        //     path: "/dashboard/billing",
+        //     name: "Billing",
+        //     component: Billing
+        // },
+        // {
+        //     path: "/dashboard/chat/:slug",
+        //     name: "Chat",
+        //     component: Chat
+        // },
+        // {
+        //     path: "/dashboard/chat",
+        //     name: "Conversations",
+        //     component: Conversations
+        // },
+        // {
+        //     path: "/dashboard/chatroom",
+        //     name: "ChatRoom",
+        //     component: ChatRoom
+        // },
         {
             path: "/dashboard/settings",
             name: "Settings",

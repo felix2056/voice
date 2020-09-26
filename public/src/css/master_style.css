@@ -2950,7 +2950,8 @@ select.form-control:not([size]):not([multiple]) {
 
 .box-fullscreen {
     position: fixed;
-    top: 0;
+    /* top: 0; */
+    top: 62px;
     left: 0;
     right: 0;
     bottom: 0;
@@ -2959,6 +2960,10 @@ select.form-control:not([size]):not([multiple]) {
 }
 .box-fullscreen .box-btn-fullscreen {
   color: #ab8ce4;
+}
+
+.box-fullscreen .box-body #chat-body {
+  height: 100% !important;
 }
 
 .box-slided-up .box-content {
@@ -11739,14 +11744,16 @@ table.dataTable thead .sorting:after {
     width: 100%;
     position: fixed;
 }
+.login-box {
+  height: 100% !important;
+  padding: 9% 0 !important;
+}
 .login-box, .register-box, .lockscreen-wrapper {
-    width: 500px;
-    margin: 0;
-    padding: 7% 0;
-    float: right;
-    height: 100%;
+    width: 60%;
+    height: auto;
     background-color: #252525;
-	    overflow-y: scroll;
+    margin: 0 auto;
+    text-align: center;
 }
 .login-box .fog-pwd {
     position: relative;

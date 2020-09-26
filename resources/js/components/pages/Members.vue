@@ -29,7 +29,7 @@
                 <a data-toggle="dropdown" href="#" aria-expanded="false">
                   <i class="ion-android-more-vertical"></i>
                 </a>
-                <div
+                <!-- <div
                   class="dropdown-menu dropdown-menu-right"
                   x-placement="bottom-end"
                   style="position: absolute; transform: translate3d(-138px, 20px, 0px); top: 0px; left: 0px; will-change: transform;"
@@ -43,15 +43,7 @@
                   <router-link :to="{ name: 'Chat', params: { slug: member.slug  } }" class="dropdown-item">
                     <i class="fa fa-fw fa-comments"></i> Chat
                   </router-link>
-                  
-                  <!-- <a class="dropdown-item" href="#">
-                    <i class="fa fa-fw fa-phone"></i> Call
-                  </a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">
-                    <i class="fa fa-fw fa-remove"></i> Remove
-                  </a> -->
-                </div>
+                </div> -->
               </div>
             </div>
             <div class="pt-3">
