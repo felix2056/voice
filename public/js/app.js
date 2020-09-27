@@ -68353,28 +68353,7 @@ var render = function() {
               "ul",
               { staticClass: "nav navbar-nav" },
               [
-                _vm._m(1),
-                _vm._v(" "),
                 _c("notifications"),
-                _vm._v(" "),
-                _c(
-                  "li",
-                  { staticClass: "dropdown tasks-menu" },
-                  [
-                    _c(
-                      "router-link",
-                      {
-                        staticClass: "dropdown-toggle",
-                        attrs: {
-                          to: { name: "Conversations" },
-                          "data-toggle": "dropdown"
-                        }
-                      },
-                      [_c("i", { staticClass: "mdi mdi-message" })]
-                    )
-                  ],
-                  1
-                ),
                 _vm._v(" "),
                 _c("li", { staticClass: "dropdown user user-menu" }, [
                   _c(
@@ -68519,7 +68498,7 @@ var render = function() {
                   ])
                 ]),
                 _vm._v(" "),
-                _vm._m(2)
+                _vm._m(1)
               ],
               1
             )
@@ -68689,7 +68668,7 @@ var render = function() {
                 : _vm._e(),
               _vm._v(" "),
               _vm.$is("Admin") || _vm.$is("Broadcaster")
-                ? _c("li", [_vm._m(3)])
+                ? _c("li", [_vm._m(2)])
                 : _vm._e(),
               _vm._v(" "),
               _vm.$is("Admin") || _vm.$is("Broadcaster")
@@ -68710,7 +68689,7 @@ var render = function() {
                   )
                 : _vm._e(),
               _vm._v(" "),
-              _vm._m(4),
+              _vm._m(3),
               _vm._v(" "),
               _vm.$is("Admin") || _vm.$is("Writer")
                 ? _c("li", { staticClass: "header nav-small-cap" }, [
@@ -68812,7 +68791,7 @@ var render = function() {
       [
         _c("div", { staticClass: "modal-dialog" }, [
           _c("div", { staticClass: "modal-content" }, [
-            _vm._m(5),
+            _vm._m(4),
             _vm._v(" "),
             _c("div", { staticClass: "modal-body" }, [
               _c("p", [_vm._v("Listen to a live broadcast")]),
@@ -68924,7 +68903,7 @@ var render = function() {
       [
         _c("div", { staticClass: "modal-dialog" }, [
           _c("div", { staticClass: "modal-content" }, [
-            _vm._m(6),
+            _vm._m(5),
             _vm._v(" "),
             _c("div", { staticClass: "modal-body" }, [
               _c("p", [
@@ -69087,36 +69066,6 @@ var staticRenderFns = [
       },
       [_c("span", { staticClass: "sr-only" }, [_vm._v("Toggle navigation")])]
     )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("li", { staticClass: "search-box" }, [
-      _c(
-        "a",
-        {
-          staticClass: "nav-link hidden-sm-down",
-          attrs: { href: "javascript:void(0)" }
-        },
-        [_c("i", { staticClass: "mdi mdi-magnify" })]
-      ),
-      _vm._v(" "),
-      _c(
-        "form",
-        { staticClass: "app-search", staticStyle: { display: "none" } },
-        [
-          _c("input", {
-            staticClass: "form-control",
-            attrs: { type: "text", placeholder: "Search & enter" }
-          }),
-          _vm._v(" "),
-          _c("a", { staticClass: "srh-btn" }, [
-            _c("i", { staticClass: "ti-close" })
-          ])
-        ]
-      )
-    ])
   },
   function() {
     var _vm = this

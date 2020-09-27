@@ -41,7 +41,7 @@
 
         <div class="navbar-custom-menu">
           <ul class="nav navbar-nav">
-            <li class="search-box">
+            <!-- <li class="search-box">
               <a class="nav-link hidden-sm-down" href="javascript:void(0)">
                 <i class="mdi mdi-magnify"></i>
               </a>
@@ -52,12 +52,12 @@
                   <i class="ti-close"></i>
                 </a>
               </form>
-            </li>
+            </li> -->
 
             <!-- Notifications -->
             <notifications />
 
-            <li class="dropdown tasks-menu">
+            <!-- <li class="dropdown tasks-menu">
               <router-link
                 :to="{ name: 'Conversations' }"
                 class="dropdown-toggle"
@@ -65,7 +65,7 @@
               >
                 <i class="mdi mdi-message"></i>
               </router-link>
-            </li>
+            </li> -->
 
             <!-- User Account -->
             <li class="dropdown user user-menu">
