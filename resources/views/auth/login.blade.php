@@ -14,7 +14,7 @@
             <div class="form-group has-feedback">
                 <input name="email" id="email" type="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="Email">
                 @error('email')
-                <span class="ion ion-email form-control-feedback">
+                <span class="ion ion-email text-danger">
                     <strong>{{ $message }}</strong>
                 </span>
                 @enderror
@@ -23,7 +23,7 @@
             <div class="form-group has-feedback">
                 <input name="password" type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" required autocomplete="current-password">
                 @error('password')
-                <span class="ion ion-locked form-control-feedback">
+                <span class="ion ion-locked text-danger">
                     <strong>{{ $message }}</strong>
                 </span>
                 @enderror
@@ -39,7 +39,8 @@
                 @if (Route::has('password.request'))
                 <div class="col-6">
                     <div class="fog-pwd">
-                        <a href="{{ route('password.request') }}"><i class="ion ion-locked"></i> {{ __('Forgot Your Password?') }}</a><br>
+                        {{-- <a href="{{ route('password.request') }}"><i class="ion ion-locked"></i> {{ __('Forgot Your Password?') }}</a><br> --}}
+                        <a href="#"><i class="ion ion-locked"></i> {{ __('Forgot Your Password?') }}</a><br>
                     </div>
                 </div>
                 @endif

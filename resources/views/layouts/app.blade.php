@@ -80,7 +80,7 @@
 
 </head>
 
-<body class="skin-yellow sidebar-mini wysihtml5-supported fixed sidebar-collapse" data-gr-c-s-loaded="true">
+<body class="skin-yellow sidebar-mini wysihtml5-supported fixed" data-gr-c-s-loaded="true">
     <script>
         window.Laravel = {!! json_encode([
             'csrfToken' => csrf_token(),

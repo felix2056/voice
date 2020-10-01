@@ -343,9 +343,11 @@
               <p>{{ alert.body }}</p>
             </div>
 
+            <iframe src="https://mixlr.com/users/8788133/embed?color=016478&autoplay=true" width="100%" height="180px" scrolling="no" frameborder="no" marginheight="0" marginwidth="0"></iframe>
+
             <audio v-show="broadcastAvailable" id="remoteAudio" controls style="display: none"></audio>
           </div>
-          <div class="modal-footer">
+          <!-- <div class="modal-footer">
             <button
               type="button"
               @click="playBroadcast()"
@@ -372,7 +374,7 @@
             >
               <i class="fa fa-stop"></i> Stop
             </button>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

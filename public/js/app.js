@@ -7676,6 +7676,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 
 
@@ -68817,6 +68819,19 @@ var render = function() {
                 ]
               ),
               _vm._v(" "),
+              _c("iframe", {
+                attrs: {
+                  src:
+                    "https://mixlr.com/users/8788133/embed?color=016478&autoplay=true",
+                  width: "100%",
+                  height: "180px",
+                  scrolling: "no",
+                  frameborder: "no",
+                  marginheight: "0",
+                  marginwidth: "0"
+                }
+              }),
+              _vm._v(" "),
               _c("audio", {
                 directives: [
                   {
@@ -68829,59 +68844,6 @@ var render = function() {
                 staticStyle: { display: "none" },
                 attrs: { id: "remoteAudio", controls: "" }
               })
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "modal-footer" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-app bg-yellow",
-                  attrs: { type: "button", disabled: !_vm.broadcastAvailable },
-                  on: {
-                    click: function($event) {
-                      return _vm.playBroadcast()
-                    }
-                  }
-                },
-                [
-                  _c("i", { staticClass: "fa fa-play" }),
-                  _vm._v(" Play\n          ")
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-app bg-purple",
-                  attrs: { type: "button", disabled: !_vm.broadcastAvailable },
-                  on: {
-                    click: function($event) {
-                      return _vm.pauseBroadcast()
-                    }
-                  }
-                },
-                [
-                  _c("i", { staticClass: "fa fa-pause" }),
-                  _vm._v(" Pause\n          ")
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-app bg-teal",
-                  attrs: { type: "button", disabled: !_vm.broadcastAvailable },
-                  on: {
-                    click: function($event) {
-                      return _vm.stopBroadcast()
-                    }
-                  }
-                },
-                [
-                  _c("i", { staticClass: "fa fa-stop" }),
-                  _vm._v(" Stop\n          ")
-                ]
-              )
             ])
           ])
         ])
