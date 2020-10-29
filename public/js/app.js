@@ -19327,7 +19327,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.skin-yellow .sidebar-menu > li:hover > a,\r\n.skin-yellow .sidebar-menu > li > a.router-link-exact-active,\r\n.skin-yellow .sidebar-menu > li.menu-open > a {\r\n  color: #ffffff;\r\n  background: #303030;\n}\n.skin-yellow .sidebar-menu > li > a.router-link-exact-active,\r\n.skin-yellow .sidebar-menu > li.menu-open > a {\r\n  color: #ffffff;\n}\n.skin-yellow .sidebar-menu > li > a.router-link-exact-active {\r\n  border-left-color: #fbae1c;\n}\r\n", ""]);
+exports.push([module.i, "\n.skin-yellow .sidebar-menu > li:hover > a,\n.skin-yellow .sidebar-menu > li > a.router-link-exact-active,\n.skin-yellow .sidebar-menu > li.menu-open > a {\n  color: #ffffff;\n  background: #303030;\n}\n.skin-yellow .sidebar-menu > li > a.router-link-exact-active,\n.skin-yellow .sidebar-menu > li.menu-open > a {\n  color: #ffffff;\n}\n.skin-yellow .sidebar-menu > li > a.router-link-exact-active {\n  border-left-color: #fbae1c;\n}\n", ""]);
 
 // exports
 
@@ -19346,7 +19346,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.read {\r\n    background: #2f2f2f;\n}\r\n", ""]);
+exports.push([module.i, "\n.read {\n    background: #2f2f2f;\n}\n", ""]);
 
 // exports
 
@@ -19365,7 +19365,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.open-chat {\r\n    background-color: #f9fafb;\n}\r\n", ""]);
+exports.push([module.i, "\n.open-chat {\n    background-color: #f9fafb;\n}\n", ""]);
 
 // exports
 
@@ -72148,7 +72148,7 @@ var staticRenderFns = [
             ]),
             _vm._v(" "),
             _c("footer", { staticClass: "mt-35" }, [
-              _vm._v("\r\n\t\t\t\t\tCopyright © 2018 "),
+              _vm._v("\n\t\t\t\t\tCopyright © 2018 "),
               _c(
                 "a",
                 {
@@ -72157,7 +72157,7 @@ var staticRenderFns = [
                 },
                 [_vm._v("Multi-Purpose Themes")]
               ),
-              _vm._v(". All Rights Reserved.\r\n\t\t\t\t")
+              _vm._v(". All Rights Reserved.\n\t\t\t\t")
             ])
           ])
         ])
@@ -76655,7 +76655,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "content-wrapper" }, [
     _c("section", { staticClass: "content-header" }, [
-      _c("h1", [_vm._v("\r\n        Single\r\n      ")]),
+      _c("h1", [_vm._v("\n        Single\n      ")]),
       _vm._v(" "),
       _c("ol", { staticClass: "breadcrumb" }, [
         _c(
@@ -76664,7 +76664,7 @@ var render = function() {
           [
             _c("router-link", { attrs: { to: { name: "Home" } } }, [
               _c("i", { staticClass: "fa fa-dashboard" }),
-              _vm._v(" Dashboard\r\n          ")
+              _vm._v(" Dashboard\n          ")
             ])
           ],
           1
@@ -76703,9 +76703,9 @@ var render = function() {
                 _vm._v(" "),
                 _c("h5", { staticClass: "no-margin" }, [
                   _vm._v(
-                    "\r\n            " +
+                    "\n            " +
                       _vm._s(_vm.mail.sender.name) +
-                      "\r\n            "
+                      "\n            "
                   ),
                   _c("br"),
                   _vm._v(" "),
@@ -76858,7 +76858,7 @@ var staticRenderFns = [
     return _c("div", { staticClass: "p-15 bt-1" }, [
       _c("h5", [
         _c("i", { staticClass: "fa fa-paperclip m-r-10 m-b-10" }),
-        _vm._v(" Attachments\r\n            "),
+        _vm._v(" Attachments\n            "),
         _c("span", [_vm._v("(3)")])
       ]),
       _vm._v(" "),
@@ -76870,12 +76870,12 @@ var staticRenderFns = [
               { staticClass: "mailbox-attachment-name", attrs: { href: "#" } },
               [
                 _c("i", { staticClass: "fa fa-paperclip" }),
-                _vm._v(" Mag.pdf\r\n                ")
+                _vm._v(" Mag.pdf\n                ")
               ]
             ),
             _vm._v(" "),
             _c("span", { staticClass: "mailbox-attachment-size" }, [
-              _vm._v("\r\n                  5,215 KB\r\n                  "),
+              _vm._v("\n                  5,215 KB\n                  "),
               _c(
                 "a",
                 {
@@ -76895,12 +76895,12 @@ var staticRenderFns = [
               { staticClass: "mailbox-attachment-name", attrs: { href: "#" } },
               [
                 _c("i", { staticClass: "fa fa-paperclip" }),
-                _vm._v(" Documents.docx\r\n                ")
+                _vm._v(" Documents.docx\n                ")
               ]
             ),
             _vm._v(" "),
             _c("span", { staticClass: "mailbox-attachment-size" }, [
-              _vm._v("\r\n                  2,145 KB\r\n                  "),
+              _vm._v("\n                  2,145 KB\n                  "),
               _c(
                 "a",
                 {
@@ -76920,12 +76920,12 @@ var staticRenderFns = [
               { staticClass: "mailbox-attachment-name", attrs: { href: "#" } },
               [
                 _c("i", { staticClass: "fa fa-camera" }),
-                _vm._v(" Image.png\r\n                ")
+                _vm._v(" Image.png\n                ")
               ]
             ),
             _vm._v(" "),
             _c("span", { staticClass: "mailbox-attachment-size" }, [
-              _vm._v("\r\n                  2.67 MB\r\n                  "),
+              _vm._v("\n                  2.67 MB\n                  "),
               _c(
                 "a",
                 {
@@ -76951,7 +76951,7 @@ var staticRenderFns = [
           { staticClass: "btn btn-success", attrs: { type: "button" } },
           [
             _c("i", { staticClass: "fa fa-reply" }),
-            _vm._v(" Reply\r\n          ")
+            _vm._v(" Reply\n          ")
           ]
         ),
         _vm._v(" "),
@@ -76960,7 +76960,7 @@ var staticRenderFns = [
           { staticClass: "btn btn-info", attrs: { type: "button" } },
           [
             _c("i", { staticClass: "fa fa-share" }),
-            _vm._v(" Forward\r\n          ")
+            _vm._v(" Forward\n          ")
           ]
         )
       ]),
@@ -76968,16 +76968,13 @@ var staticRenderFns = [
       _c(
         "button",
         { staticClass: "btn btn-danger", attrs: { type: "button" } },
-        [
-          _c("i", { staticClass: "fa fa-trash-o" }),
-          _vm._v(" Delete\r\n        ")
-        ]
+        [_c("i", { staticClass: "fa fa-trash-o" }), _vm._v(" Delete\n        ")]
       ),
       _vm._v(" "),
       _c(
         "button",
         { staticClass: "btn btn-warning", attrs: { type: "button" } },
-        [_c("i", { staticClass: "fa fa-print" }), _vm._v(" Print\r\n        ")]
+        [_c("i", { staticClass: "fa fa-print" }), _vm._v(" Print\n        ")]
       )
     ])
   }
@@ -101608,8 +101605,8 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\voice\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\voice\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /home/skywalker/laraspace/voice/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /home/skywalker/laraspace/voice/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
