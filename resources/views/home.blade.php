@@ -36,22 +36,22 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <!-- Favicon-->
-  <link rel="shortcut icon" href="@if($siteInfo['favicon']){{asset('storage/site/'.$siteInfo['favicon'])}} @else{{ asset('assets/images/site/favicon.png') }}@endif">
+  <link rel="shortcut icon" href="@if(@$siteInfo['favicon']){{asset('storage/site/'.$siteInfo['favicon'])}} @else{{ asset('assets/images/site/favicon.png') }}@endif">
 
   <!-- Author Meta -->
   <meta name="author" content="CodeBreaker">
 
   <!-- Meta Description -->
-  <meta name="description" content="{{ $siteInfo['site_desc'] }}">
+  <meta name="description" content="{{ @$siteInfo['site_desc'] }}">
   
   <!-- Meta Keyword -->
-  <meta name="keywords" content="{{ $siteInfo['keywords'] }}">
+  <meta name="keywords" content="{{ @$siteInfo['keywords'] }}">
   
   <!-- meta character set -->
   <meta charset="UTF-8">
   
   <!-- Site Title -->
-  <title>{{ $siteInfo['site_name'] }} | Home</title>
+  <title>{{ @$siteInfo['site_name'] }} | Home</title>
 
   <link href="https://fonts.googleapis.com/css?family=Poppins:100,300,500" rel="stylesheet">
   
@@ -74,7 +74,7 @@
           <div class="header-top d-flex justify-content-between align-items-center">
             <div class="logo">
               <a href="{{ route('home') }}">
-                <img style="max-width: 100px;" src="@if($siteInfo['logo']){{asset('storage/site/'.$siteInfo['logo'])}} @else{{ asset('assets/images/site/logo.png') }}@endif">
+                <img style="max-width: 100px;" src="@if(@$siteInfo['logo']){{asset('storage/site/'.$siteInfo['logo'])}} @else{{ asset('assets/images/site/logo.png') }}@endif">
               </a>
             </div>
             <div class="main-menubar d-flex align-items-center">
@@ -111,7 +111,7 @@
         <div class="row fullscreen align-items-center justify-content-center">
           <div class="col-lg-10">
             <div class="banner-content text-center">
-              <h1 class="text-uppercase text-white">{{ $siteInfo['site_name'] }}</h1>
+              <h1 class="text-uppercase text-white">{{ @$siteInfo['site_name'] }}</h1>
 
               @guest
                 <a href="{{ route('register') }}" class="genric-btn primary circle arrow">Get Started<span class="lnr lnr-arrow-right"></span></a>
@@ -131,7 +131,7 @@
     <footer class="section-gap">
       <div class="container">
         <div class="footer-bottom d-flex justify-content-between align-items-center flex-wrap">
-          <p class="footer-text m-0">Copyright {{ $siteInfo['site_name'] }} &copy; <?php echo date('Y'); ?> All rights reserved</p>
+          <p class="footer-text m-0">Copyright {{ @$siteInfo['site_name'] }} &copy; <?php echo date('Y'); ?> All rights reserved</p>
         </div>
       </div>
     </footer>

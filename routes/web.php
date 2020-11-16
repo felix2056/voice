@@ -34,6 +34,11 @@ Route::get('/test', function () {
     broadcast(new NewPost($data))->toOthers();
 });
 
+Route::get('/t', 'Ant\BroadcastController@test');
+Route::get('/broadcast', 'Ant\BroadcastController@broadcast');
+Route::get('/admin/broadcast', 'Ant\AdminBroadcastController@broadcast');
+
+
 Auth::routes();
 
 Route::group(['middleware' => ['auth']], function () {

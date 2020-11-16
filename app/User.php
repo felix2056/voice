@@ -43,6 +43,7 @@ class User extends Authenticatable
         'country',
         'last_login_at',
         'last_login_ip',
+        'phonenumber',
     ];
 
     /**
