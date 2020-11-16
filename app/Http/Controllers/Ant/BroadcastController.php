@@ -10,15 +10,10 @@ use Illuminate\Support\Facades\Http;
 class BroadcastController extends Controller {
     public function broadcast(){
     	$originUrl = "http://67.205.185.92:5080/";
-    	$response = Http::get($originUrl.'LiveApp/rest/v2/broadcasts/543759052355131228190000');
-
-
-        $decoded = json_decode($response, true);
-        $url = "rtmp://67.205.185.92:5080".$decoded['streamId'];
+        $ip = "67.205.185.92:5080";
 
         return view('broadcasts.streams',[
-        	'url' => $url,
-        	'data' => $decoded
+        	'ip' => $ip,
         ]);
     }
 

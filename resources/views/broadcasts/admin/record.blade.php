@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Ant Media Server WebRTC Audio Publish</title>
+        <title>Audio Publish</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta charset="UTF-8">
         <link rel="stylesheet"
@@ -77,7 +77,7 @@
     <body>
         <div class="container">
             <div class="header clearfix">
-                <h3 class="text-muted">WebRTC Publish</h3>
+                <h3 class="text-muted">Publish Audio</h3>
             </div>
             <div class="jumbotron">
                 <p>

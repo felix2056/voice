@@ -35,7 +35,7 @@ Route::get('/test', function () {
 });
 
 Route::get('/t', 'Ant\BroadcastController@test');
-Route::get('/broadcast', 'Ant\BroadcastController@broadcast');
+Route::get('/broadcasts', 'Ant\BroadcastController@broadcast');
 Route::get('/admin/broadcast', 'Ant\AdminBroadcastController@broadcast');
 
 

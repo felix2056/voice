@@ -1,20 +1,200 @@
-@extends('layouts.authentication')
+<html>
+<head>
+<title>Ant Media Server WebRTC Audio Player</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<link rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous">
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<style>
+video {
+    width: 100%;
+    max-width: 640px;
+}
+/* Space out content a bit */
+body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
 
-@section('content')
-<div class="register-box">
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header, .marketing, .footer {
+    padding-right: 15px;
+    padding-left: 15px;
+}
 
-    <div class="register-box-body" style="background: #fff; min-height: 300px; margin: 100px auto; padding: 10px;">
-        <h3>Live Broadcasts</h3>
-        <p>Name: {{ $data['name'] }}</p>
-        <!-- <audio controls controlsList="nodownload" style="width: 100% !important">
-            <source src="http://67.205.185.92:5080/LiveApp/play.html?name=543759052355131228190000">
-        </audio> -->
+/* Custom page header */
+.header {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e5e5;
+}
+/* Make the masthead heading the same height as the navigation */
+.header h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 40px;
+}
 
-        <!-- <iframe width="560" height="315" src="http://67.205.185.92:5080/WebRTCAppEE/play.html?name=075101314461075315719711" frameborder="0" allowfullscreen> -->
+/* Custom page footer */
+.footer {
+    padding-top: 19px;
+    color: #777;
+    border-top: 1px solid #e5e5e5;
+}
 
-        <iframe width="560" height="315" src="http://67.205.185.92:5080/LiveApp/play.html?name=617040448705698765237201" frameborder="0" allowfullscreen></iframe>
-            
-        </iframe>
+/* Customize container */
+@media ( min-width : 768px) {
+    .container {
+        max-width: 730px;
+    }
+}
+
+.container-narrow>hr {
+    margin: 30px 0;
+}
+
+/* Main marketing message and sign up button */
+.jumbotron {
+    text-align: center;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+    /* Remove the padding we set earlier */
+    .header, .marketing, .footer {
+        padding-right: 0;
+        padding-left: 0;
+    }
+    /* Space out the masthead */
+    .header {
+        margin-bottom: 30px;
+    }
+    /* Remove the bottom border on the jumbotron for visual effect */
+    .jumbotron {
+        border-bottom: 0;
+    }
+}
+</style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header clearfix">
+            <h3 class="text-muted">Play Audio Stream</h3>
+        </div>
+
+        <div class="jumbotron">
+
+            <p>
+                <audio id="remoteVideo" autoplay controls></audio>
+            </p>
+            <p>
+                <input type="hidden" class="form-control" value="stream1"
+                    id="streamName" placeholder="Type stream name">
+            </p>
+            <p>
+                <button class="btn btn-info"
+                    id="start_play_button">Start Playing</button>
+                <button class="btn btn-info"
+                    id="stop_play_button">Stop Playing</button>
+
+            </p>
+        </div>
+        <footer class="footer">
+            <!-- <p>
+                <a href="http://antmedia.io">Ant Media Server Enterprise Edition</a>
+            </p> -->
+        </footer>
     </div>
-</div>
-@endsection
+
+</body>
+<script type="module">
+    import {WebRTCAdaptor} from "{{ asset('/js/webrtc_adaptor.js') }}"
+
+    var start_publish_button = document.getElementById("start_play_button");
+    start_publish_button.addEventListener("click", startPlaying, false);
+    var stop_publish_button = document.getElementById("stop_play_button");
+    stop_publish_button.addEventListener("click", stopPlaying, false);
+
+    var streamNameBox = document.getElementById("streamName");
+    
+    var streamId;
+    function startPlaying() {
+        streamId = streamNameBox.value;
+        webRTCAdaptor.play(streamNameBox.value);
+    }
+
+    function stopPlaying() {
+        webRTCAdaptor.stop(streamId);
+    }
+
+    var pc_config = null;
+
+    var sdpConstraints = {
+        OfferToReceiveAudio : true,
+        OfferToReceiveVideo : true
+
+    };
+    var mediaConstraints = {
+        video : false,
+        audio : false
+    };
+    
+    /*var appName = location.pathname.substring(0, location.pathname.lastIndexOf("/")+1);
+    var websocketURL = "ws://" + location.hostname + ":5080" + appName + "websocket";
+    
+    if (location.protocol.startsWith("https")) {
+        websocketURL = "wss://" + location.hostname + ":5443" + appName + "websocket";
+    }*/
+
+    var ip = "67.205.185.92";
+        
+    var appName = location.pathname.substring(0, location.pathname.lastIndexOf("/")+1);
+    var websocketURL = "ws://" + ip + ":5080/" + "WebRTCAppEE/websocket";
+    
+    if (location.protocol.startsWith("https")) {
+        websocketURL = "wss://" + ip + ":5443/" + + "WebRTCAppEE/websocket";
+    }
+    
+    var webRTCAdaptor = new WebRTCAdaptor({
+        websocket_url : websocketURL,
+        mediaConstraints : mediaConstraints,
+        peerconnection_config : pc_config,
+        sdp_constraints : sdpConstraints,
+        remoteVideoId : "remoteVideo",
+        isPlayMode: true,
+        debug: true,
+        callback : function(info, description) {
+            if (info == "initialized") {
+                console.log("initialized");
+                start_play_button.disabled = false;
+                stop_play_button.disabled = true;
+            } else if (info == "play_started") {
+                //joined the stream
+                console.log("play started");
+                start_play_button.disabled = true;
+                stop_play_button.disabled = false;
+            
+            } else if (info == "play_finished") {
+                //leaved the stream
+                console.log("play finished");
+                start_play_button.disabled = false;
+                stop_play_button.disabled = true;
+            }
+            else if (info == "closed") {
+                //console.log("Connection closed");
+                if (typeof description != "undefined") {
+                    console.log("Connecton closed: " + JSON.stringify(description));
+                }
+            }
+        },
+        callbackError : function(error) {console.log("error callback: " + JSON.stringify(error));
+            alert(JSON.stringify(error));
+        }
+    });
+
+</script>
+</html>
