@@ -99,7 +99,7 @@
         </div>
     </body>
     <script type="module">
-        import {WebRTCAdaptor} from "{{ asset('/js/webrtc_adaptor.js') }}"
+        import {WebRTCAdaptor} from "{{ asset('/js/webrtc_adaptor.js', true) }}"
         
         var start_publish_button = document.getElementById("start_publish_button");
         start_publish_button.addEventListener("click", startPublishing, false);
@@ -145,13 +145,14 @@
             audio : true
         };
 
-        var ip = "67.205.185.92";
+        //var ip = "67.205.185.92";
+        var ip = "ant.bmunyoki.com";
         
         var appName = location.pathname.substring(0, location.pathname.lastIndexOf("/")+1);
         var websocketURL = "ws://" + ip + ":5080/" + "WebRTCAppEE/websocket";
         
         if (location.protocol.startsWith("https")) {
-            websocketURL = "wss://" + ip + ":5443/" + + "WebRTCAppEE/websocket";
+            websocketURL = "wss://" + ip + ":5443/" + "WebRTCAppEE/websocket";
         }
 
         console.log(websocketURL);

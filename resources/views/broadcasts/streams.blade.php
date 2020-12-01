@@ -156,7 +156,7 @@ body {
     var websocketURL = "ws://" + ip + ":5080/" + "WebRTCAppEE/websocket";
     
     if (location.protocol.startsWith("https")) {
-        websocketURL = "wss://" + ip + ":5443/" + + "WebRTCAppEE/websocket";
+        websocketURL = "wss://" + ip + ":5443/" + "WebRTCAppEE/websocket";
     }
     
     var webRTCAdaptor = new WebRTCAdaptor({
