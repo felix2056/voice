@@ -85,24 +85,26 @@ body {
         <div class="header clearfix">
             <h3 class="text-muted">Play Audio Stream</h3>
         </div>
+        @if($streams->count() > 0)
+            <div class="jumbotron">
+                <p>
+                    <audio id="remoteVideo" autoplay controls></audio>
+                </p>
+                <p>
+                    <input type="hidden" class="form-control" value="{{ $streams->first()->stream_id }}"
+                        id="streamName" placeholder="Type stream name">
+                </p>
+                <p>
+                    <button class="btn btn-info"
+                        id="start_play_button">Start Playing</button>
+                    <button class="btn btn-info"
+                        id="stop_play_button">Stop Playing</button>
 
-        <div class="jumbotron">
-
-            <p>
-                <audio id="remoteVideo" autoplay controls></audio>
-            </p>
-            <p>
-                <input type="hidden" class="form-control" value="stream1"
-                    id="streamName" placeholder="Type stream name">
-            </p>
-            <p>
-                <button class="btn btn-info"
-                    id="start_play_button">Start Playing</button>
-                <button class="btn btn-info"
-                    id="stop_play_button">Stop Playing</button>
-
-            </p>
-        </div>
+                </p>
+            </div>
+        @else
+            <p>No ongoing broadcast</p>
+        @endif
         <footer class="footer">
             <!-- <p>
                 <a href="http://antmedia.io">Ant Media Server Enterprise Edition</a>
@@ -156,7 +158,8 @@ body {
     var websocketURL = "ws://" + ip + ":5080/" + "WebRTCAppEE/websocket";
     
     if (location.protocol.startsWith("https")) {
-        websocketURL = "wss://" + ip + ":5443/" + "WebRTCAppEE/websocket";
+        //websocketURL = "wss://" + ip + ":5443/" + "WebRTCAppEE/websocket";
+        websocketURL = "wss://ant.bmunyoki.com:5443/WebRTCAppEE/websocket";
     }
     
     var webRTCAdaptor = new WebRTCAdaptor({
